@@ -1,5 +1,6 @@
-#import "@preview/arkheion:0.1.2": *
-#show: arkheion.with(
+#import "arkheion-mcp.typ": *
+
+#show: preprint-theme.with(
   title: "Agent Seer Meets Schema-Blindness: Spec-Driven Evaluation of Generative-Media MCP Agents",
   authors: (
     (name: "G. Hussain Chinoy", email: "ghchinoy@gmail.com", affiliation: "Independent Researcher"),
@@ -67,7 +68,7 @@ These characteristics make generative-media MCP servers an ideal stress-test for
 The synthetic evaluation pipeline transforms raw MCP `tools/list` declarations into validated evaluation harnesses through four sequential stages:
 
 === Stage 1: Tool Interpretation (Semantic Feature Extraction)
-Raw MCP tool definitions are expanded into a 5-dimensional semantic representation: `tool_name`, `what_it_does`, `what_it_needs` (required vs. optional parameters and type constraints), `why_its_used`, and `enterprise_context` classification tags.
+Raw tool definitions are expanded into a 5-dimensional semantic representation: `tool_name`, `what_it_does`, `what_it_needs` (required vs. optional parameters and type constraints), `why_its_used`, and `enterprise_context` classification tags.
 
 === Stage 2: Scenario Generation (Simple vs. Complex & Oracle Workflows)
 Using Stage 1 semantic summaries, the generator produces task scenarios across two complexity tiers (Simple single-intent tasks and Complex multi-tool enterprise workflows). To eliminate generator selection bias, prompts inject a strict coverage guarantee:
@@ -91,31 +92,31 @@ Composite workflows are segmented at natural phase boundaries to create multi-tu
 
 Evaluation separates assessment into *Tool-Calling Correctness ($"TC"$)* and *Conversational Coherence ($"Coh"$)*.
 
-Every sub-dimension $k$ is scored on an integer scale $x_k in {0, 1, ..., 10}$ and normalized via:
-$ op("norm")_(10)(x_k) = max(0.0, min(1.0, x_k / 10.0)) $
-
 #table(
-  columns: (0.6fr, 1fr, 1.4fr, 0.8fr, 2.5fr, 2.5fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (0.4fr, 0.9fr, 1.4fr, 0.7fr, 3.6fr),
+  table.hline(stroke: 0.9pt),
   table.header(
-    [*Idx*], [*Category*], [*Subdimension ($k$)*], [*Scope*], [*Normalization*], [*Evaluation Focus*]
+    [*Idx*], [*Category*], [*Subdimension ($k$)*], [*Scope*], [*Evaluation Focus*]
   ),
-  [1], [*Usage*], [`necessity`], [Always], [$D_("usage") = op("norm")_(10)(x_("nec"))$], [Was a tool call required, or could the LLM answer directly?],
-  [2], [], [`overuse_detection`], [Diagnostic], [*Excluded from aggregate*], [Did the agent make redundant or unprompted calls?],
-  [3], [*Selection*], [`correctness`], [Always], [$op("norm")_(10)(x_("cor"))$], [Does the tool choice match the requested functional intent?],
-  [4], [], [`specificity`], [Always], [$op("norm")_(10)(x_("spec"))$], [Was the most specialized tool selected over generic tools?],
-  [5], [], [`completeness`], [Always], [$op("norm")_(10)(x_("comp"))$], [Were all necessary tools selected to satisfy the task?],
-  [6], [*Arguments*], [`completeness`], [Always], [$op("norm")_(10)(x_("arg_comp"))$], [Are all mandatory schema parameters provided?],
-  [7], [], [`name_accuracy`], [Always], [$op("norm")_(10)(x_("name"))$], [Do parameter keys match the schema exactly (case-sensitive)?],
-  [8], [], [`value_accuracy`], [Always], [$op("norm")_(10)(x_("val"))$], [Are values grounded, valid, and aligned with prompt/context?],
-  [9], [], [`type_compliance`], [Always], [$op("norm")_(10)(x_("type"))$], [Do values match expected types (string, int, array, object)?],
-  [10], [], [`format_compliance`], [Always], [$op("norm")_(10)(x_("fmt"))$], [Do values follow formats (URI schemes, enums, bounds)?],
-  [11], [], [`relevancy`], [Always], [$op("norm")_(10)(x_("rel"))$], [Are arguments free of ungrounded or extraneous keys?],
-  [12], [*Ordering*], [`sequence_logic`], [Tools $> 1$], [$op("norm")_(10)(x_("seq"))$], [Is execution order logical across dependent steps?],
-  [13], [], [`dependency_handling`], [Tools $> 1$], [$op("norm")_(10)(x_("dep"))$], [Are output values from earlier steps piped correctly?],
-  [14], [], [`execution_efficiency`], [Tools $> 1$], [$op("norm")_(10)(x_("eff"))$], [Is the execution path optimal without redundant hops?]
+  table.hline(stroke: 0.5pt),
+  [1], [*Usage*], [`necessity`], [Always], [Was a tool call required, or could the LLM answer directly?],
+  [2], [], [`overuse_detection`], [Diagnostic], [Did the agent make redundant or unprompted calls? (Diagnostic; excluded from aggregate)],
+  [3], [*Selection*], [`correctness`], [Always], [Does the tool choice match the requested functional intent?],
+  [4], [], [`specificity`], [Always], [Was the most specialized tool selected over generic tools?],
+  [5], [], [`completeness`], [Always], [Were all necessary tools selected to satisfy the task?],
+  [6], [*Arguments*], [`completeness`], [Always], [Are all mandatory schema parameters provided?],
+  [7], [], [`name_accuracy`], [Always], [Do parameter keys match the schema exactly (case-sensitive)?],
+  [8], [], [`value_accuracy`], [Always], [Are values grounded, valid, and aligned with prompt/context?],
+  [9], [], [`type_compliance`], [Always], [Do values match expected types (string, int, array, object)?],
+  [10], [], [`format_compliance`], [Always], [Do values follow formats (URI schemes, enums, bounds)?],
+  [11], [], [`relevancy`], [Always], [Are arguments free of ungrounded or extraneous keys?],
+  [12], [*Ordering*], [`sequence_logic`], [Tools $> 1$], [Is execution order logical across dependent steps?],
+  [13], [], [`dependency_handling`], [Tools $> 1$], [Are output values from earlier steps piped correctly?],
+  [14], [], [`execution_efficiency`], [Tools $> 1$], [Is the execution path optimal without redundant hops?],
+  table.hline(stroke: 0.9pt),
 )
+#v(-0.4em)
+#text(size: 7.5pt, fill: rgb("#475569"))[*Note:* Subdimension scores $x_k in [0, 10]$ normalize via $op("norm")_(10)(x_k) = max(0.0, min(1.0, x_k / 10.0))$. Aggregate dimension formulas $D_("usage"), D_("selection"), D_("arguments"), D_("ordering")$ are detailed below.]
 
 Dimension and composite scores aggregate as:
 1. $D_("usage") = op("norm")_(10)(x_("necessity"))$
@@ -190,7 +191,7 @@ To resolve schema-blindness, we architected a *Capability Matrix Enrichment* lay
 == 4.4 Restoration of Clean Discrimination
 
 #figure(
-  image("asset-1788113828780669000.svg"),
+  nanobanana-chart(),
   caption: [Tool-Calling Correctness ($"TC"$) scores on the Nanobanana server. Capability Matrix enrichment resolves the schema-blindness vulnerability, collapsing false passes on faulty runs (NB1, NB3, NB4) while preserving correct baseline results (NB0, NB6).]
 )
 
@@ -206,18 +207,19 @@ All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, T
 == 5.1 Comprehensive Multi-Server Summary
 
 #table(
-  columns: (2fr, 1.2fr, 1.4fr, 1.4fr, 2fr, 1.4fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (1.6fr, 1fr, 1.2fr, 1.2fr, 1.8fr, 1.2fr),
+  table.hline(stroke: 0.9pt),
   table.header(
     [*Server Suite*], [*Evaluation Run*], [*Mean Correct TC*], [*Mean Broken TC*], [*Discrimination Gap*], [*Taxonomy Hits*]
   ),
+  table.hline(stroke: 0.5pt),
   [Veo (Video)], [Baseline], [1.000], [0.768], [0.232], [7/9 (77.8%)],
   [Veo (Video)], [Enriched], [0.994], [0.796], [0.198], [9/9 (100.0%)],
   [Nanobanana (Image)], [Baseline], [1.000], [0.842], [0.158], [6/6 (100.0%)],
   [Nanobanana (Image)], [Enriched], [0.994], [0.780], [0.215 (+36.1% gap)], [5/6 (83.3%)],
   [Lyria (Music)], [Baseline], [1.000], [0.752], [0.248], [5/5 (100.0%)],
-  [Lyria (Music)], [Enriched], [1.000], [0.809], [0.191], [5/5 (100.0%)]
+  [Lyria (Music)], [Enriched], [1.000], [0.809], [0.191], [5/5 (100.0%)],
+  table.hline(stroke: 0.9pt),
 )
 
 == 5.2 Server Suite 1: Google Veo (`mcp-veo-go`)
@@ -225,15 +227,15 @@ All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, T
 The Veo suite evaluates 11 hand-authored transcripts covering 6 distinct tools and 9 injected failure modes.
 
 #table(
-  columns: (2.2fr, 0.8fr, 2.2fr, 1.5fr, 1.1fr, 1.1fr, 1.2fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (1.8fr, 0.7fr, 2.3fr, 1.2fr, 1fr, 1fr, 1fr),
+  table.hline(stroke: 0.9pt),
   table.header(
     [*Case ID*], [*Kind*], [*Injected Defect / Task Description*], [*Target Taxonomy*], [*Baseline (Flash)*], [*Baseline (Pro)*], [*Enriched (Flash)*]
   ),
+  table.hline(stroke: 0.5pt),
   [`A0-correct`], [Correct], [Text-to-video (16:9, audio, valid GCS bucket)], [None], [*1.000*], [1.000], [*0.994*],
-  [`A1-wrong-model-value`], [Broken], [Veo 2.0 requesting `generate_audio=true`], [`argument_val`], [*1.000* (False)], [0.839], [*0.800*],
-  [`A2-illegal-enum`], [Broken], [Veo 3.1 with `aspect_ratio: "21:9"`], [`argument_fmt`], [*0.956* (Near)], [0.867], [*0.789*],
+  [`A1-wrong-model-value`], [Broken], [Veo 2.0 requesting `generate_audio=true`], [`argument_val`], [*1.000* #badge-highlight[False]], [0.839], [*0.800*],
+  [`A2-illegal-enum`], [Broken], [Veo 3.1 with `aspect_ratio: "21:9"`], [`argument_fmt`], [*0.956* #badge-highlight[Near]], [0.867], [*0.789*],
   [`A3-hallucinated-model`], [Broken], [Model ID `veo-3.5-ultra` (not in spec)], [`argument_val`], [*0.822*], [0.822], [*0.800*],
   [`A4-missing-required`], [Broken], [Omitted required parameter `prompt`], [`arg_comp`], [*0.722*], [0.778], [N/A],
   [`A5-wrong-tool`], [Broken], [Invoked `veo_i2v` with no image provided], [`selection`], [*0.444*], [0.494], [N/A],
@@ -241,7 +243,8 @@ The Veo suite evaluates 11 hand-authored transcripts covering 6 distinct tools a
   [`B0-correct`], [Correct], [Image-to-video with valid GCS source], [None], [*1.000*], [1.000], [N/A],
   [`B1-wrong-tool`], [Broken], [Invoked `veo_t2v` ignoring provided image], [`selection`], [*0.656*], [0.500], [N/A],
   [`B2-missing-req-img`], [Broken], [Omitted required `image_uri` in `veo_i2v`], [`arg_comp`], [*0.778*], [0.794], [N/A],
-  [`B3-malformed-uri`], [Broken], [Passed local path `in.png` instead of `gs://`], [`argument_fmt`], [*0.867*], [0.911], [N/A]
+  [`B3-malformed-uri`], [Broken], [Passed local path `in.png` instead of `gs://`], [`argument_fmt`], [*0.867*], [0.911], [N/A],
+  table.hline(stroke: 0.9pt),
 )
 
 == 5.3 Server Suite 2: Gemini Image / Nanobanana (`mcp-nanobanana-go`)
@@ -249,20 +252,21 @@ The Veo suite evaluates 11 hand-authored transcripts covering 6 distinct tools a
 The Nanobanana suite evaluates 8 test cases covering multimodal inputs, resolution scaling, aspect ratio limits, and parameter naming rules.
 
 #table(
-  columns: (2.5fr, 0.8fr, 2.5fr, 1.8fr, 1.2fr, 1.2fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (2fr, 0.7fr, 2.5fr, 1.3fr, 1fr, 1fr),
+  table.hline(stroke: 0.9pt),
   table.header(
     [*Case ID*], [*Kind*], [*Injected Defect / Task Description*], [*Target Taxonomy*], [*Baseline TC*], [*Enriched TC*]
   ),
+  table.hline(stroke: 0.5pt),
   [`NB0-correct`], [Correct], [Text-to-image (Gemini 3.1 Flash, 16:9, 2K)], [None], [*1.000*], [*0.989*],
-  [`NB1-illegal-size-on-2.5`], [Broken], [`gemini-2.5-flash-image` with `image_size: "4K"`], [`argument_val`], [*0.944* (Near)], [*0.778*],
+  [`NB1-illegal-size-on-2.5`], [Broken], [`gemini-2.5-flash-image` with `image_size: "4K"`], [`argument_val`], [*0.944* #badge-highlight[Near]], [*0.778*],
   [`NB2-illegal-aspect-ratio`], [Broken], [Flash 2.5 with ultra-tall aspect ratio `1:8`], [`argument_fmt`], [*0.767*], [*0.778*],
-  [`NB3-hallucinated-model`], [Broken], [Hallucinated `imagen-3.5-ultra-banana`], [`argument_val`], [*0.906* (Near)], [*0.750*],
+  [`NB3-hallucinated-model`], [Broken], [Hallucinated `imagen-3.5-ultra-banana`], [`argument_val`], [*0.906* #badge-highlight[Near]], [*0.750*],
   [`NB4-missing-req-prompt`], [Broken], [Omitted required `prompt` parameter], [`arg_comp`], [*0.794*], [*0.667*],
   [`NB5-wrong-param-names`], [Broken], [Invalid names `ratio` & `bucket`], [`argument_name`], [*0.817*], [*0.806*],
   [`NB6-correct-image-to-image`], [Correct], [Gemini 3 Pro with valid input image array], [None], [*1.000*], [*1.000*],
-  [`NB7-malformed-images-type`], [Broken], [`images` passed as bare string (not array)], [`argument_type`], [*0.822*], [*0.900*]
+  [`NB7-malformed-images-type`], [Broken], [`images` passed as bare string (not array)], [`argument_type`], [*0.822*], [*0.900*],
+  table.hline(stroke: 0.9pt),
 )
 
 *Key Metric:* Capability matrix enrichment expanded Nanobanana's discrimination gap from *0.158 to 0.215*, representing a *$+36.1\%$ expansion in discriminating power*.
@@ -272,19 +276,20 @@ The Nanobanana suite evaluates 8 test cases covering multimodal inputs, resoluti
 The Lyria suite evaluates 7 test cases covering audio generation durations, parameter name variations (`model_id` vs `model`), GCS bucket naming, and negative prompt conditioning.
 
 #table(
-  columns: (2.5fr, 0.8fr, 2.5fr, 1.8fr, 1.2fr, 1.2fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (2fr, 0.7fr, 2.5fr, 1.3fr, 1fr, 1fr),
+  table.hline(stroke: 0.9pt),
   table.header(
     [*Case ID*], [*Kind*], [*Injected Defect / Task Description*], [*Target Taxonomy*], [*Baseline TC*], [*Enriched TC*]
   ),
+  table.hline(stroke: 0.5pt),
   [`LY0-correct`], [Correct], [Lyria 3 Clip (30s lofi jazz, GCS output)], [None], [*1.000*], [*1.000*],
   [`LY1-wrong-model-param-name`], [Broken], [Passed `model` instead of required `model_id`], [`argument_name`], [*0.739*], [*0.778*],
   [`LY2-wrong-bucket-param-name`], [Broken], [Passed `gcs_bucket_uri` instead of expected], [`argument_name`], [*0.667*], [*0.889*],
   [`LY3-hallucinated-model`], [Broken], [Hallucinated `lyria-ultra-composer-001`], [`argument_val`], [*0.800*], [*0.806*],
   [`LY4-missing-required-prompt`], [Broken], [Omitted required `prompt` parameter], [`arg_comp`], [*0.778*], [*0.794*],
   [`LY5-correct-full-track`], [Correct], [Lyria 3 Pro (150s full orchestral score)], [None], [*1.000*], [*1.000*],
-  [`LY6-malformed-sample-count`], [Broken], [`sample_count: -5` (violates minimum constraint)], [`argument_fmt`], [*0.778*], [*0.778*]
+  [`LY6-malformed-sample-count`], [Broken], [`sample_count: -5` (violates minimum constraint)], [`argument_fmt`], [*0.778*], [*0.778*],
+  table.hline(stroke: 0.9pt),
 )
 
 == 5.5 Cross-Server Production Pipeline Evaluation
@@ -292,16 +297,17 @@ The Lyria suite evaluates 7 test cases covering audio generation durations, para
 We also validated multi-turn capabilities over a four-step cross-server media pipeline (`cross_server_media_production`) where inputs are chained from Lyria to Nanobanana to Veo.
 
 #table(
-  columns: (2.5fr, 2fr, 1.2fr, 1.2fr, 1.2fr, 1.2fr),
-  stroke: 0.5pt + luma(150),
-  fill: (x, y) => if y == 0 { luma(230) } else { none },
+  columns: (2.2fr, 1.8fr, 0.9fr, 0.9fr, 0.9fr, 0.9fr),
+  table.hline(stroke: 0.9pt),
   table.header(
     [*Scenario*], [*Injected Fault*], [*Total TC*], [*Selection*], [*Arguments*], [*Ordering*]
   ),
+  table.hline(stroke: 0.5pt),
   [*CS0-correct-pipeline*], [None (Baseline)], [*0.912*], [1.000], [0.717], [0.933],
   [*CS1-broken-uri-pipe*], [Broken URI (Step 2)], [*0.817*], [1.000], [0.367], [0.900],
   [*CS2-aspect-ratio-mismatch*], [Aspect Ratio Mismatch], [*0.792*], [1.000], [0.500], [0.667],
-  [*CS3-broken-pipeline-ordering*], [Out-of-order execution], [*0.517*], [0.733], [0.333], [0.000]
+  [*CS3-broken-pipeline-ordering*], [Out-of-order execution], [*0.517*], [0.733], [0.333], [0.000],
+  table.hline(stroke: 0.9pt),
 )
 
 The cross-server run confirms that while selection remains resilient, out-of-order execution (*CS3*) completely derails the model's pipeline state representation, collapsing the Ordering dimension to *0.000* and overall $"TC"$ to *0.517*.
