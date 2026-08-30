@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agent-seer",
+  "version": "1.0.0",
+  "description": "Specification-driven evaluation, deterministic capability linting, and synthetic test harness generation for Model Context Protocol (MCP) tool suites.",
+  "author": {
+    "name": "ghchinoy",
+    "url": "https://github.com/ghchinoy"
+  },
+  "repository": "https://github.com/ghchinoy/ai-paper-reproductions",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agent-eval",
+    "mcp",
+    "tool-calling",
+    "synthetic-scenarios",
+    "deterministic-linter",
+    "capability-matrix",
+    "gemini",
+    "gemma"
+  ]
+}

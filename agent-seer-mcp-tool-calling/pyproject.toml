@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-seer"
+version = "1.0.0"
+description = "Spec-driven evaluation, deterministic linting, and synthetic test harness generation for MCP agents."
+readme = "README.md"
+authors = [
+    { name = "ghchinoy", email = "ghchinoy@gmail.com" }
+]
+license = { text = "Apache-2.0" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.20",
+]
+
+[project.scripts]
+agent-seer = "agent_seer.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/ghchinoy/ai-paper-reproductions"
+Repository = "https://github.com/ghchinoy/ai-paper-reproductions"
+Paper = "https://arxiv.org/abs/2608.26133"
+
+[tool.setuptools.packages.find]
+where = ["src"]
