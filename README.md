@@ -13,9 +13,15 @@ analysis, the spike code, the saved artifacts, and a narrative write-up.
 
 ## Layout of a reproduction
 
-Each directory follows the same shape:
+Each reproduction directory follows a consistent shape:
 
 - `README.md` — the narrative write-up (what the paper claims, how we reproduced it, the results).
 - `paper-analysis.md` — the closer reading of the paper and how it maps to the system under test.
 - `spike-result.md` — the go/no-go result of the spike, with the raw numbers.
-- `spike/` — the code and every saved artifact needed to reproduce the run.
+- `spike/` — the standalone reproduction spike code and every saved empirical artifact.
+- `src/` & `pyproject.toml` — the production Python package and CLI (`agent-seer`).
+- `tests/` — unit, integration, and adversarial test suites.
+- `plugin.json` & `skills/` — Agent Plugin and Agent Skill definitions for agentic workflows.
+- `technical-report.md` — in-depth technical analysis, architecture, and empirical findings.
+- `blog-post.md` — narrative publication write-up and engineering post-mortem.
+- `recommendations.md` — actionable design guidelines and architectural recommendations.

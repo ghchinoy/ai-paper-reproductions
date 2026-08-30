@@ -7,7 +7,7 @@
 
 ## 1. The Generative Media Evaluation Trap
 
-When building autonomous AI agents for creative production—generating cinematic video campaigns, rendering high-resolution product imagery, or composing multi-track audio scores—how do you test whether your agent actually works?
+When building autonomous AI agents for creative production—generating cinematic video campaigns, rendering high-resolution product imagery, or composing multi-track audio scores—how do you test whether your agent executes correctly?
 
 The intuitive answer is: **look at the output.** Render the video with Google Veo, generate the hero image with Gemini Image (Nanobanana), synthesize the soundtrack with Google Lyria, and evaluate the resulting MP4, PNG, and WAV files.
 
@@ -46,7 +46,7 @@ Recently, Apple researchers published **Agent Seer** ([arXiv:2608.26133](https:/
 
 We reproduced and extended Agent Seer across three production-grade generative-media MCP servers. In doing so, we uncovered a critical, cautionary vulnerability: **Schema-Blindness**. 
 
-Here is what we learned, why standard JSON schemas silently fail AI judges, and how machine-readable capability matrices restore deterministic evaluation rigor.
+Below is what we learned, why standard JSON schemas cause AI judges to miss critical runtime failures, and how machine-readable capability matrices restore deterministic evaluation rigor.
 
 ---
 
@@ -274,7 +274,7 @@ The un-enriched judge granted a **1.000 Perfect Pass** to a call that crashes im
 ```
 
 #### The Production Reality vs. Baseline Judge Score:
-- **Backend Runtime Reality:** `gemini-2.5-flash-image` does not support the `image_size` parameter at all (it is silently ignored or rejected). Furthermore, the agent passed `"4K"` when the user requested `"2K"`.
+- **Backend Runtime Reality:** `gemini-2.5-flash-image` does not support the `image_size` parameter at all (the backend ignores or rejects it). Furthermore, the agent passed `"4K"` when the user requested `"2K"`.
 - **Baseline LLM Judge Result:**
   - **Tool-Calling Score ($TC$):** `0.944` ⚠️ **(Near Pass)**
   - **Arguments Score:** `0.833`
@@ -446,7 +446,22 @@ Our empirical reproduction offers clear, actionable architectural lessons for bo
 
 ---
 
-## 8. Summary: The Path to Industrialized Agent Engineering
+## 8. What We Built Next: Uplifting to an Agent Plugin & Skill
+
+Following our empirical spike across the three generative-media servers, we uplifted the research prototype into a production Python package (`src/agent_seer/`), an installable CLI (`agent-seer`), and a standards-compliant Agent Plugin and Skill (`plugin.json`, `skills/agent-seer/`).
+
+The production package turns the lessons of this reproduction into reusable developer tooling:
+
+1. **Sub-Millisecond Deterministic Linter (`DeterministicLinter`):** A zero-cost pre-pass that validates parameter names, types, enum variants, and model capability matrices in under 1ms, catching 100% of illegal parameter combinations before any LLM judge is invoked.
+2. **Capability-Enriched LLM Judge (`AgentSeerJudge`):** Reconstructed decomposed rubrics (`ToolSelection`, `ToolSequence`, `ArgumentValue`, `ArgumentCompleteness`, `ArgumentFormat`) with capability matrix context injection and dual-client support (Gemini via Vertex AI and Gemma via Model Garden or local OpenAI-compatible endpoints).
+3. **Synthetic Scenario & DAG Generator (`SyntheticHarnessGenerator`):** Specification-driven synthetic test generator with multi-server cross-tool choreography, seed output grounding, and fault injection.
+4. **CLI & Agent Packaging:** An `agent-seer` CLI with `inspect`, `lint`, and `eval` commands, alongside agent-friendly plugin and skill manifests for autonomous coding agents.
+
+> **Validation Note:** The production package passes 224 unit, integration, and adversarial tests in CI, but has not yet been run as a live evaluation against the original Veo, Nanobanana, and Lyria empirical discrimination baselines.
+
+---
+
+## 9. Summary: The Path to Industrialized Agent Engineering
 
 Generative media agents represent the cutting edge of AI capability—but building them reliably requires moving past "vibe-based" pixel inspection.
 
@@ -458,6 +473,11 @@ By adopting **specification-driven scenario generation (Agent Seer)** and reinfo
 
 ### Artifact & Reproduction Index
 - **Reference Paper:** *Agent Seer: Synthesizing Scenarios from Specification Understanding* ([arXiv:2608.26133](https://arxiv.org/abs/2608.26133))
-- **Reproduction Code & Harness:** `agent-seer-mcp-tool-calling/spike/`
+- **Production Package & CLI:** `agent-seer-mcp-tool-calling/src/agent_seer/` (`agent-seer`)
+- **Agent Plugin & Skill:** `agent-seer-mcp-tool-calling/plugin.json`, `agent-seer-mcp-tool-calling/skills/agent-seer/`
+- **Test Suite:** `agent-seer-mcp-tool-calling/tests/` (224 unit, integration, and adversarial tests)
+- **Reproduction Code & Spike Harness:** `agent-seer-mcp-tool-calling/spike/`
 - **Evaluated MCP Servers:** `mcp-veo-go`, `mcp-nanobanana-go`, `mcp-lyria-go`
 - **Empirical Artifacts:** `spike/artifacts/discrimination_*.json`, `spike/artifacts/veo_model_capabilities.json`
+- **Technical Report:** [`technical-report.md`](./technical-report.md)
+- **Architectural Recommendations:** [`recommendations.md`](./recommendations.md)

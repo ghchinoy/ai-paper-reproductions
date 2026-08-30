@@ -135,9 +135,65 @@ The framework is modularized under `spike/servers/` and driven by a unified runn
 3. **Gemma Out-of-Family Judge Support:**
    - Added [`gemma_client.py`](./spike/gemma_client.py) supporting Vertex AI Model Garden / MaaS endpoints and local OpenAI-compatible inference servers to allow cross-family circularity validation.
 
-## Reproducing this
+## Deliverables & Documentation
 
-The reproduction code and artifacts live under `spike/`:
+- [`technical-report.md`](./technical-report.md) — Comprehensive technical analysis of the Agent Seer reproduction, empirical findings across 3 MCP servers, cross-model circularity validation, and architectural analysis.
+- [`blog-post.md`](./blog-post.md) — Narrative engineering post-mortem: *Why Your LLM Judge Passes Broken Tool Calls: A Spec-Driven Evaluation Post-Mortem*.
+- [`recommendations.md`](./recommendations.md) — Actionable design guidelines for MCP server authors and agent developers on implementing deterministic linting and capability matrices.
+- [`PROJECT.md`](./PROJECT.md) — Milestone tracking, scoring formulas, and deliverable paths for the Agent Seer reproduction and uplift project.
+- [`paper-analysis.md`](./paper-analysis.md) — Paper reading and translation to generative-media MCP schemas.
+- [`spike-result.md`](./spike-result.md) — Go/no-go decision report from the initial reproduction spike.
+
+## Production Package & CLI (`agent-seer`)
+
+The experimental spike has been uplifted into a modular production Python package located in `src/agent_seer/` with an installable CLI entrypoint (`agent-seer`).
+
+### Installation
+
+```bash
+# Install package locally with dev dependencies
+uv pip install -e ".[dev]"
+```
+
+### CLI Usage
+
+```bash
+# Inspect MCP server schemas and capability matrices
+agent-seer inspect spike/servers/veo/schema.json --caps spike/servers/veo/capabilities.json
+
+# Deterministic capability and schema linting (sub-millisecond, machine-checked)
+agent-seer lint spike/servers/veo/transcripts.py --server spike/servers/veo/schema.json --caps spike/servers/veo/capabilities.json
+
+# LLM-as-judge scoring with capability matrix enrichment
+agent-seer eval spike/servers/veo/transcripts.py --server spike/servers/veo/schema.json --caps spike/servers/veo/capabilities.json --model gemini-2.5-flash
+```
+
+## Agent Plugin & Agent Skill
+
+Agent Seer is packaged for agentic environments as a standards-compliant Agent Plugin and Skill:
+- [`plugin.json`](./plugin.json) — Agent Plugin manifest specifying plugin metadata, capabilities, and keywords.
+- [`skills/agent-seer/`](./skills/agent-seer/) — Agent Skill instructions, workflows, and operational guides for spec-driven MCP evaluation.
+
+## Test Suite
+
+The production package includes a comprehensive test suite of 224 unit, integration, and adversarial tests:
+
+```bash
+# Run the complete test suite
+uv run --with pytest --with pytest-asyncio pytest -v
+```
+
+Test coverage includes:
+- `tests/test_models.py` & `test_scoring.py` — Pydantic schemas, rubric decomposition, and score aggregation.
+- `tests/test_linter.py` & `test_challenger_m1_linter_scoring.py` — Deterministic schema validation and sub-millisecond capability rule enforcement.
+- `tests/test_judge.py` & `test_clients.py` — LLM-as-judge prompt construction, Gemini / Gemma clients, and enriched context injection.
+- `tests/test_pipeline.py` & `test_discovery.py` — Synthetic scenario generation, DAG validation, and MCP server discovery.
+- `tests/test_plugin_conformance.py` — Schema validation of `plugin.json` and agent skill structures.
+- `tests/test_tier5_adversarial_m1.py` & `test_challenger_m2_*.py` — Adversarial edge cases, malformed payloads, circularity guards, and multi-server DAGs.
+
+## Reproduction Spike (`spike/`)
+
+The original standalone reproduction code and empirical artifacts live under `spike/`:
 - `runner.py` — unified discrimination runner (`--server veo|nanobanana|lyria|all`, `--enriched`, `--second-judge`, `--gemma`).
 - `servers/` — per-server schemas, capability matrices, seed responses, and curated test transcripts:
   - `servers/veo/` (`mcp-veo-go`)
