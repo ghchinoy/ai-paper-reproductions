@@ -1,0 +1,17 @@
+{
+  "ffmpeg_combine_audio_and_video": {
+    "RequiresVideo": true,
+    "RequiresAudio": true,
+    "SupportedAudioFormats": [".wav", ".mp3", ".aac", ".ogg"],
+    "SupportedVideoFormats": [".mp4", ".mov", ".webm"],
+    "Description": "Combines audio and video tracks into a single output video (MP4)."
+  },
+  "ffmpeg_adjust_volume": {
+    "SupportedAudioFormats": [".wav", ".mp3", ".aac"],
+    "VolumeUnit": "dB"
+  },
+  "ffmpeg_video_to_gif": {
+    "SupportedFps": [10, 15, 24, 30],
+    "SupportedOutputFormats": [".gif"]
+  }
+}

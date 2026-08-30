@@ -1,7 +1,7 @@
 # Agent Seer (Option A) spike — result & go/no-go
 
 **Server:** `mcp-veo-go` (Option A: orchestration-correctness, not media quality)
-**Paper:** Agent Seer, arXiv 2608.26133 (spec→scenario→mock-output→judge)
+**Paper:** Agent Seer, [arXiv:2608.26133](https://arxiv.org/abs/2608.26133) (spec→scenario→mock-output→judge)
 **Judge/generator:** Gemini 2.5 Flash (judge, temp 0) + Gemini 2.5 Flash Lite (generator, temp 0.7), via Vertex `generateContent`. Out-of-family spot-check: Gemini 2.5 Pro (see caveat).
 **Code + artifacts:** `spike/` (pipeline, prompts, judge) and `spike/artifacts/` (every intermediate + all scores). This is throwaway validation work, not wired to CI, no app-repo PR.
 

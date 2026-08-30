@@ -1,0 +1,23 @@
+{
+  "lyria-002": {
+    "CanonicalName": "lyria-002",
+    "Aliases": ["Lyria 2"],
+    "Description": "The original Lyria 2 model (using standard Vertex AI Prediction API).",
+    "EndpointType": "prediction",
+    "MaxDurationSeconds": 30
+  },
+  "lyria-3-clip-preview": {
+    "CanonicalName": "lyria-3-clip-preview",
+    "Aliases": ["Lyria 3 Clip"],
+    "Description": "Lyria 3 Clip model for 30-second audio generation (using Interactions API).",
+    "EndpointType": "interactions",
+    "MaxDurationSeconds": 30
+  },
+  "lyria-3-pro-preview": {
+    "CanonicalName": "lyria-3-pro-preview",
+    "Aliases": ["Lyria 3 Pro"],
+    "Description": "Lyria 3 Pro model for 2:30 audio generation (using Interactions API).",
+    "EndpointType": "interactions",
+    "MaxDurationSeconds": 150
+  }
+}

@@ -10,7 +10,7 @@ A recent paper offered a way to build that missing layer without hand-authoring 
 
 ## The paper: Agent Seer
 
-Agent Seer (Karumuri, Vemula, and Lopes Pegna, arXiv 2608.26133) targets the cold-start evaluation problem: you have a new or fast-changing tool suite and no test data for it. Its claim is that a tool specification already carries enough meaning to synthesize evaluation scenarios, so you can generate an eval harness from the spec alone and never execute a tool.
+Agent Seer (Karumuri, Vemula, and Lopes Pegna, [arXiv:2608.26133](https://arxiv.org/abs/2608.26133)) targets the cold-start evaluation problem: you have a new or fast-changing tool suite and no test data for it. Its claim is that a tool specification already carries enough meaning to synthesize evaluation scenarios, so you can generate an eval harness from the spec alone and never execute a tool.
 
 The method is a four-stage pipeline, with a Pydantic schema validating each stage boundary:
 
@@ -123,26 +123,26 @@ The result is a conditional go. The condition is the whole point: do not ship th
 2. Pair the LLM judge with deterministic schema and capability contract checks for the constraints that are machine-checkable, and reserve the judge for selection, ordering, and value-grounding that is not.
 3. Then invest in the live agent-under-test runner, the real integration cost, and gate CI on scores only after the runner exists.
 
-## A forward-looking note on the out-of-family judge
+## Expanding beyond Veo: Nanobanana, Lyria, and Gemma Out-of-Family Judging
 
-The paper's defense against LLM-as-judge circularity rests on re-scoring with an out-of-family model, Qwen3.5-122B. We could not reproduce that check. We had no Qwen access in this environment, so our second judge was Gemini 2.5 Pro, which is a same-family model. Pro agreed with Flash on most cases and, usefully, caught the A1 bug that Flash missed, but same-family agreement cannot rule out a shared blind spot.
+The framework is modularized under `spike/servers/` and driven by a unified runner (`spike/runner.py`):
 
-A natural next step, suggested by the project owner, is to use a Gemma 24B model available through Model Garden as the out-of-family judge in place of Qwen. Gemma is a distinct model family from the Gemini judge and is reachable in our own environment, which makes it a practical substitute for the paper's circularity check. We have not run this yet. It is the first thing to do before trusting the absolute scores or gating anything on them.
+1. **`mcp-nanobanana-go` (Image generation & editing):**
+   - **Baseline:** Flash judge gave **0.944** to `NB1-illegal-size-on-2.5` (passing `image_size: 4K` on Gemini 2.5 Flash, which lacks resolution controls).
+   - **Enriched:** With `capabilities.json` added, the score dropped to **0.778** while valid baselines remained at **0.989–1.000**, confirming the capability-matrix fix generalizes across modalities.
+2. **`mcp-lyria-go` (Music & audio generation):**
+   - Correctly flagged parameter misnomers (e.g., `model` vs schema-expected `model_id` scoring **0.739–0.778**, and `gcs_bucket_uri` vs `output_gcs_bucket` scoring **0.667**).
+3. **Gemma Out-of-Family Judge Support:**
+   - Added [`gemma_client.py`](./spike/gemma_client.py) supporting Vertex AI Model Garden / MaaS endpoints and local OpenAI-compatible inference servers to allow cross-family circularity validation.
 
 ## Reproducing this
 
-The spike code and every artifact live under `spike/`: the pipeline, the reconstructed judge, the real `tools/list` we captured, all stage outputs, the discrimination results, the enriched re-run, and the capability matrix. Running it needs `gcloud` application-default credentials, Python 3, and the Go toolchain (only to re-pull the spec). The pipeline regenerates stages 1 through 3, and the discrimination script runs the correct-versus-broken proof with the optional second judge. Every score in this post is a live model output saved alongside the code, not a hand-entered figure.
-
-## Files in this reproduction
-
-- `README.md` — this write-up.
-- `paper-analysis.md` — the closer reading of Agent Seer and how its method maps onto our generative-media MCP servers.
-- `spike-result.md` — the go/no-go result, with the full discrimination and enrichment numbers.
-- `spike/` — the reproduction code and artifacts:
-  - `agent_seer_spike.py` — the four-stage pipeline (ingest spec, interpret, generate scenarios, mock outputs).
-  - `discrimination_test.py` — the correct-versus-broken transcript proof.
-  - `judge.py`, `scoring.py`, `prompts.py` — the reconstructed tool-calling and coherence judge, aggregation, and prompt provenance.
-  - `gemini_client.py` — the Vertex `generateContent` client.
-  - `seed_outputs.json` — the real `mcp-veo-go` response shape used to raise Stage-3 grounding.
-  - `spike/README.md` — how to run it.
-  - `spike/artifacts/` — the captured spec, every stage output, and all scores (`discrimination_results.json`, `discrimination_enriched.json`, `veo_model_capabilities.json`, and more).
+The reproduction code and artifacts live under `spike/`:
+- `runner.py` — unified discrimination runner (`--server veo|nanobanana|lyria|all`, `--enriched`, `--second-judge`, `--gemma`).
+- `servers/` — per-server schemas, capability matrices, seed responses, and curated test transcripts:
+  - `servers/veo/` (`mcp-veo-go`)
+  - `servers/nanobanana/` (`mcp-nanobanana-go`)
+  - `servers/lyria/` (`mcp-lyria-go`)
+- `gemini_client.py` & `gemma_client.py` — Vertex AI and Model Garden API clients.
+- `judge.py`, `scoring.py`, `prompts.py` — reconstructed tool-calling rubric, aggregation, and prompt provenance.
+- `artifacts/` — live model outputs and discrimination results for all servers.

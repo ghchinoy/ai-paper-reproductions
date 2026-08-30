@@ -1,0 +1,346 @@
+{
+  "server": "nanobanana",
+  "enriched": true,
+  "judges": [
+    "gemini-2.5-flash"
+  ],
+  "summary": {
+    "gemini-2.5-flash": {
+      "mean_correct": 0.994,
+      "mean_broken": 0.78,
+      "gap": 0.215,
+      "taxonomy_hits": "5/6"
+    }
+  },
+  "results": [
+    {
+      "label": "NB0-correct",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "a vibrant futuristic solar city with green rooftops and monorails",
+            "model": "gemini-3.1-flash-image",
+            "aspect_ratio": "16:9",
+            "image_size": "2K",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.989,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.9666666666666667
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.8,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_value"
+          ],
+          "rationale": "The agent correctly selected the image generation tool and provided all necessary parameters. The prompt was slightly embellished beyond the user's explicit request, but this is a minor deviation for a creative task."
+        }
+      }
+    },
+    {
+      "label": "NB1-illegal-size-on-2.5",
+      "kind": "broken",
+      "injected_fault": "gemini-2.5-flash-image does not support image_size parameter",
+      "expected_taxonomy": "argument_value",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "a vibrant futuristic solar city with green rooftops and monorails",
+            "model": "gemini-2.5-flash-image",
+            "aspect_ratio": "16:9",
+            "image_size": "4K",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.778,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent selected a model (`gemini-2.5-flash-image`) that does not support the `image_size` parameter, failing to meet the user's explicit request for a \"2K\" resolution image. Additionally, the `image_size` value provided (\"4K\") was incorrect, as the user requested \"2K\"."
+        }
+      }
+    },
+    {
+      "label": "NB2-illegal-aspect-ratio",
+      "kind": "broken",
+      "injected_fault": "aspect_ratio 1:8 is not supported on gemini-2.5-flash-image",
+      "expected_taxonomy": "argument_format",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "a vibrant futuristic solar city with green rooftops and monorails",
+            "model": "gemini-2.5-flash-image",
+            "aspect_ratio": "1:8",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.778,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "selection",
+            "argument_value"
+          ],
+          "rationale": "The agent selected a model that does not support the user's requested image resolution (2K). Additionally, the aspect ratio provided in the tool call (1:8) directly contradicts the user's request for a 16:9 landscape image."
+        }
+      }
+    },
+    {
+      "label": "NB3-hallucinated-model",
+      "kind": "broken",
+      "injected_fault": "model ID does not exist in schema or registry",
+      "expected_taxonomy": "argument_value",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "a vibrant futuristic solar city with green rooftops and monorails",
+            "model": "imagen-3.5-ultra-banana",
+            "aspect_ratio": "16:9",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.75,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.25
+          },
+          "argument_subscores": {
+            "completeness": 0.5,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "argument_value",
+            "argument_completeness"
+          ],
+          "rationale": "The agent provided an invalid model name not found in the specifications. It also failed to include the 'image_size' parameter, despite the user explicitly requesting '2K' resolution."
+        }
+      }
+    },
+    {
+      "label": "NB4-missing-required-prompt",
+      "kind": "broken",
+      "injected_fault": "missing required 'prompt' parameter",
+      "expected_taxonomy": "argument_completeness",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "model": "gemini-3.1-flash-image",
+            "aspect_ratio": "16:9",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.667,
+          "dims": {
+            "usage": 1.0,
+            "selection": 0.6666666666666666,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_completeness"
+          ],
+          "rationale": "The agent failed to include the required 'prompt' parameter and the explicitly requested 'image_size' parameter, making the tool call incomplete and unable to fulfill the user's request."
+        }
+      }
+    },
+    {
+      "label": "NB5-wrong-param-names",
+      "kind": "broken",
+      "injected_fault": "wrong parameter names ratio/bucket (schema expects aspect_ratio, gcs_bucket_uri)",
+      "expected_taxonomy": "argument_name",
+      "prompt": "Generate a vibrant, high-resolution 16:9 landscape image of a futuristic solar city in 2K, saving to gs://mybucket/out/.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "a vibrant futuristic solar city with green rooftops and monorails",
+            "model": "gemini-3.1-flash-image",
+            "ratio": "16:9",
+            "bucket": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.806,
+          "dims": {
+            "usage": 1.0,
+            "selection": 0.8333333333333334,
+            "arguments": 0.5833333333333334
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 0.5,
+            "value_accuracy": 0.5,
+            "type_compliance": 0.5,
+            "format_compliance": 0.5,
+            "relevancy": 0.5
+          },
+          "failures": [
+            "argument_name",
+            "argument_name",
+            "selection_completeness"
+          ],
+          "rationale": "The agent used incorrect parameter names for 'aspect_ratio' and 'gcs_bucket_uri'. Additionally, it failed to include the 'image_size' parameter, which was explicitly requested as '2K' by the user, leading to a default of '1K'."
+        }
+      }
+    },
+    {
+      "label": "NB6-correct-image-to-image",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Take the existing image at gs://mybucket/source.png and edit it to look like it is snowing at night.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "modify the scene to add heavy falling snow and night lighting",
+            "model": "gemini-3-pro-image",
+            "images": [
+              "gs://mybucket/source.png"
+            ],
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for image generation/editing, selected the appropriate tool, and provided all necessary and relevant parameters based on the user's request and the tool's capabilities."
+        }
+      }
+    },
+    {
+      "label": "NB7-malformed-images-type",
+      "kind": "broken",
+      "injected_fault": "images parameter must be an array of string URIs/paths, not string",
+      "expected_taxonomy": "argument_type",
+      "prompt": "Take the existing image at gs://mybucket/source.png and edit it to look like it is snowing at night.",
+      "calls": [
+        {
+          "function_name": "nanobanana_image_generation",
+          "parameters": {
+            "prompt": "modify the scene to add heavy falling snow and night lighting",
+            "model": "gemini-3-pro-image",
+            "images": "gs://mybucket/source.png",
+            "gcs_bucket_uri": "gs://mybucket/out/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.9,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.7000000000000001
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 0.1,
+            "format_compliance": 0.1,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_type",
+            "argument_format"
+          ],
+          "rationale": "The agent correctly selected the tool and provided semantically accurate values for all parameters. However, the 'images' parameter was provided as a single string instead of an array of strings, violating the schema's type and format requirements."
+        }
+      }
+    }
+  ]
+}

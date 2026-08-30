@@ -1,0 +1,57 @@
+{
+  "tools": [
+    {
+      "name": "nanobanana_image_generation",
+      "description": "Generates content (text and/or images) based on a multimodal prompt using Gemini Image generation models.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt for content generation."
+          },
+          "model": {
+            "type": "string",
+            "default": "gemini-3.1-flash-image",
+            "description": "Model for image generation. Can be a full model ID or a common name. Supported models:\n- *gemini-2.5-flash-image* (Ratios: 1:1, 3:2, 2:3, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9) Aliases: *Nano Banana*, *nano-banana*\n- *gemini-3-pro-image* (Ratios: 1:1, 3:2, 2:3, 3:4, 1:4, 4:1, 4:3, 4:5, 5:4, 1:8, 8:1, 9:16, 16:9, 21:9, 9:21) (Sizes: 1K, 2K, 4K) Aliases: *Nano Banana Pro*, *Gemini 3 Pro Image*\n- *gemini-3.1-flash-image* (Ratios: 1:1, 3:2, 2:3, 3:4, 1:4, 4:1, 4:3, 4:5, 5:4, 1:8, 8:1, 9:16, 16:9, 21:9, 9:21) (Sizes: 512, 1K, 2K, 4K) Aliases: *Nano Banana 2*\n- *gemini-3.1-flash-lite-image* (Ratios: 1:1, 1:4, 4:1, 1:8, 8:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9) (Sizes: 1K) Aliases: *Nano Banana 2 Lite*"
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "default": "1:1",
+            "description": "Aspect ratio of the generated images. Note: supported aspect ratios are model-dependent."
+          },
+          "image_size": {
+            "type": "string",
+            "description": "Optional. Size of the generated images: 1K, 2K, or 4K. Defaults to 1K when unset. Note: supported sizes are model-dependent."
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional. A list of local file paths or GCS URIs for input media (images, videos, or PDFs)."
+          },
+          "gcs_bucket_uri": {
+            "type": "string",
+            "description": "Optional. GCS URI prefix to store generated images (e.g., your-bucket/outputs/)."
+          },
+          "output_directory": {
+            "type": "string",
+            "description": "Optional. Local directory to save generated image(s) to."
+          },
+          "output_filename": {
+            "type": "string",
+            "description": "Optional. Client-predictable base name for the generated file(s)."
+          },
+          "seed": {
+            "type": "number",
+            "description": "Optional. Non-negative integer seed for best-effort reproducible image generation."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,343 @@
+{
+  "tools": [
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Adjusts the volume of an audio file by a specified dB amount.",
+      "inputSchema": {
+        "properties": {
+          "input_audio_uri": {
+            "description": "URI of the input audio file (local path or gs://).",
+            "type": "string"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output audio file.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output audio file. The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output audio file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output audio file.",
+            "type": "string"
+          },
+          "volume_db_change": {
+            "description": "Volume change in dB (e.g., -10 for -10dB, 5 for +5dB).",
+            "type": "number"
+          }
+        },
+        "required": [
+          "input_audio_uri",
+          "volume_db_change"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_adjust_volume"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Combines separate audio and video files into a single video file.",
+      "inputSchema": {
+        "properties": {
+          "input_audio_uri": {
+            "description": "URI of the input audio file (local path or gs://).",
+            "type": "string"
+          },
+          "input_audio_volume_db_change": {
+            "description": "Optional. Volume change in dB for the input audio track (e.g., +5).",
+            "type": "number"
+          },
+          "input_video_uri": {
+            "description": "URI of the input video file (local path or gs://).",
+            "type": "string"
+          },
+          "input_video_volume_db_change": {
+            "description": "Optional. Volume change in dB for the input video's audio track (e.g., -10).",
+            "type": "number"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output video file (e.g., 'combined.mp4').",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'combined.mp4'). The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output video file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output video file.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_video_uri",
+          "input_audio_uri"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_combine_audio_and_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Concatenates multiple media files. If output is WAV, inputs must be PCM WAV; otherwise, inputs are standardized to MP4/AAC before concatenation.",
+      "inputSchema": {
+        "properties": {
+          "input_media_uris": {
+            "description": "Array of URIs for the input media files (local paths or gs://).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output file (e.g., 'concatenated.mp4'). Extension determines behavior for audio concatenation.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'concatenated.mp4'). The client-provided extension is honored and selects the output format (and determines behavior for audio concatenation). Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output file.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_media_uris"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_concatenate_media_files"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Converts a WAV audio file to MP3 format using FFMpeg.",
+      "inputSchema": {
+        "properties": {
+          "input_audio_uri": {
+            "description": "URI of the input WAV audio file (local path or gs://).",
+            "type": "string"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output MP3 file (e.g., 'converted.mp3'). If omitted, a unique name is generated.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'converted.mp3'). The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output MP3 file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output MP3 file.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_audio_uri"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_convert_audio_wav_to_mp3"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Gets media information (streams, format, etc.) from a media file using ffprobe. Returns JSON output.",
+      "inputSchema": {
+        "properties": {
+          "input_media_uri": {
+            "description": "URI of the input media file (local path or gs://).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_media_uri"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_get_media_info"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Layers multiple audio files together (mixing).",
+      "inputSchema": {
+        "properties": {
+          "input_audio_uris": {
+            "description": "Array of URIs for the input audio files to layer (local paths or gs://).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output mixed audio file (e.g., 'layered_audio.mp3').",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'layered_audio.mp3'). The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output file.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_audio_uris"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_layer_audio_files"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Overlays an image onto a video at specified coordinates.",
+      "inputSchema": {
+        "properties": {
+          "input_image_uri": {
+            "description": "URI of the input image file (local path or gs://).",
+            "type": "string"
+          },
+          "input_video_uri": {
+            "description": "URI of the input video file (local path or gs://).",
+            "type": "string"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output video file (e.g., 'overlayed_video.mp4').",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'overlayed_video.mp4'). The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output video file to.",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output video file.",
+            "type": "string"
+          },
+          "x_coordinate": {
+            "default": 0,
+            "description": "X coordinate for the overlay (top-left).",
+            "type": "number"
+          },
+          "y_coordinate": {
+            "default": 0,
+            "description": "Y coordinate for the overlay (top-left).",
+            "type": "number"
+          }
+        },
+        "required": [
+          "input_video_uri",
+          "input_image_uri"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_overlay_image_on_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Creates a GIF from an input video using a two-pass FFMpeg process (palette generation and palette use).",
+      "inputSchema": {
+        "properties": {
+          "fps": {
+            "default": 15,
+            "description": "Frames per second for the output GIF (e.g., 10, 15, 25).",
+            "maximum": 50,
+            "minimum": 1,
+            "type": "number"
+          },
+          "input_video_uri": {
+            "description": "URI of the input video file (local path or gs://).",
+            "type": "string"
+          },
+          "output_file_name": {
+            "description": "Optional (deprecated; use output_filename). Desired name for the output GIF file (e.g., 'animation.gif'). If omitted, a unique name is generated.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Desired name for the output file (e.g., 'animation.gif'). The client-provided extension is honored and selects the output format. Takes precedence over the deprecated output_file_name. If omitted, a unique name is generated. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_gcs_bucket": {
+            "description": "Optional. GCS bucket to upload the output GIF file to (uses GENMEDIA_BUCKET if set and this is empty).",
+            "type": "string"
+          },
+          "output_local_dir": {
+            "description": "Optional. Local directory to save the output GIF file.",
+            "type": "string"
+          },
+          "scale_width_factor": {
+            "default": 0.33,
+            "description": "Factor to scale the input video's width by (e.g., 0.33 for 33%). Height is scaled automatically to maintain aspect ratio. Use 1.0 for original width.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "input_video_uri"
+        ],
+        "type": "object"
+      },
+      "name": "ffmpeg_video_to_gif"
+    }
+  ]
+}

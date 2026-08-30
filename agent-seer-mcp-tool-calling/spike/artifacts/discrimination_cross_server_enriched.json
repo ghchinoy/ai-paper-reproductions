@@ -1,0 +1,155 @@
+{
+  "pipeline": "cross_server_media_production",
+  "enriched": true,
+  "results": [
+    {
+      "label": "CS0-correct-pipeline",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.018,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.912,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.7166666666666667,
+            "ordering": 0.9333333333333332
+          },
+          "argument_subscores": {
+            "completeness": 0.9,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.6,
+            "type_compliance": 0.6,
+            "format_compliance": 0.6,
+            "relevancy": 0.6
+          },
+          "failures": [
+            "argument_completeness",
+            "argument_value"
+          ],
+          "rationale": "The agent correctly selected and ordered the tools. However, the `veo_i2v` call failed to specify the requested output filename, leading to a default name. Subsequently, the `ffmpeg_combine_audio_and_video` call incorrectly assumed the filename for the input video, which was not the one requested by the user or guaranteed by the previous tool call."
+        }
+      }
+    },
+    {
+      "label": "CS1-broken-uri-pipe",
+      "kind": "broken",
+      "injected_fault": "Step 2 image_uri is broken: does not reference upstream nanobanana output URI",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.24,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.817,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3666666666666667,
+            "ordering": 0.9
+          },
+          "argument_subscores": {
+            "completeness": 0.4,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.2,
+            "type_compliance": 0.2,
+            "format_compliance": 0.2,
+            "relevancy": 0.2
+          },
+          "failures": [
+            "argument_completeness",
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent correctly selected and ordered the tools. However, it failed to include several user-specified output filenames and the image size for the first step. Crucially, it also failed to correctly pass the output URI from the image generation step to the video animation step, and from the video animation step to the final combination step, using generic or incorrect placeholder URIs."
+        }
+      }
+    },
+    {
+      "label": "CS2-aspect-ratio-mismatch",
+      "kind": "broken",
+      "injected_fault": "Step 1 generated 9:16 portrait image violating prompt request for 16:9 landscape",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.036,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.792,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.5,
+            "ordering": 0.6666666666666666
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.5,
+            "type_compliance": 0.5,
+            "format_compliance": 0.5,
+            "relevancy": 0.5
+          },
+          "failures": [
+            "argument_value",
+            "argument_completeness",
+            "ordering"
+          ],
+          "rationale": "The agent failed to provide explicit output filenames for the intermediate video and audio generation steps, leading to incorrect input URIs for the final video combination. Additionally, the initial image generation call used an incorrect aspect ratio and omitted the requested image size."
+        }
+      }
+    },
+    {
+      "label": "CS3-broken-pipeline-ordering",
+      "kind": "broken",
+      "injected_fault": "ffmpeg_combine_audio_and_video invoked out of order before video and audio were generated",
+      "expected_taxonomy": "ordering_sequence_logic",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.099,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.517,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 0.7333333333333334,
+            "arguments": 0.3333333333333333,
+            "ordering": 0.0
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "ordering",
+            "argument_completeness",
+            "argument_value"
+          ],
+          "rationale": "The agent failed to order the tool calls correctly, calling the final combination step before the necessary video and audio were generated. It also missed several explicit user requirements for output locations and filenames, leading to ungrounded input URIs for subsequent calls and an incomplete overall solution."
+        }
+      }
+    }
+  ]
+}

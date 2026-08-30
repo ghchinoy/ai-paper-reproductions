@@ -1,0 +1,20 @@
+{
+  "_note": "Real mcp-lyria-go success-response shape.",
+  "lyria_generate_music": {
+    "grounding": "high",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Generated 1 music sample(s) using model lyria-3-clip-preview. Saved to GCS: gs://ghchinoy-genai-sa-genmedia/music/ambient.wav"
+        },
+        {
+          "type": "resource_link",
+          "uri": "gs://ghchinoy-genai-sa-genmedia/music/ambient.wav",
+          "mimeType": "audio/wav",
+          "description": "lyria audio output"
+        }
+      ]
+    }
+  }
+}

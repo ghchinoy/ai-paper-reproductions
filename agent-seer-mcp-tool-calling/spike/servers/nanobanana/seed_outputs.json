@@ -1,0 +1,20 @@
+{
+  "_note": "Real mcp-nanobanana-go success-response shape.",
+  "nanobanana_image_generation": {
+    "grounding": "high",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Generated 1 image(s) using model gemini-3.1-flash-image. Saved to GCS: gs://ghchinoy-genai-sa-genmedia/output/hero.png"
+        },
+        {
+          "type": "resource_link",
+          "uri": "gs://ghchinoy-genai-sa-genmedia/output/hero.png",
+          "mimeType": "image/png",
+          "description": "nanobanana output 1 of 1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "chirp_tts": {
+    "DefaultVoice": "en-US-Chirp3-HD-Zephyr",
+    "SupportedEncodings": ["ipa", "xsampa"],
+    "OutputFormat": ".wav",
+    "Description": "Chirp 3 HD Text-to-speech synthesis with expressive voice actors."
+  }
+}

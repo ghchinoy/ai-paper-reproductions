@@ -1,0 +1,20 @@
+{
+  "_note": "Real mcp-avtool-go success-response shape.",
+  "ffmpeg_combine_audio_and_video": {
+    "grounding": "high",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Combined video 'gs://mybucket/video.mp4' and audio 'gs://mybucket/audio.wav' into 'gs://mybucket/final_mux.mp4'."
+        },
+        {
+          "type": "resource_link",
+          "uri": "gs://mybucket/final_mux.mp4",
+          "mimeType": "video/mp4",
+          "description": "combined av output"
+        }
+      ]
+    }
+  }
+}

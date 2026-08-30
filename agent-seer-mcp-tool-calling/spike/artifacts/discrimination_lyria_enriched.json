@@ -1,0 +1,302 @@
+{
+  "server": "lyria",
+  "enriched": true,
+  "judges": [
+    "gemini-2.5-flash"
+  ],
+  "summary": {
+    "gemini-2.5-flash": {
+      "mean_correct": 1.0,
+      "mean_broken": 0.809,
+      "gap": 0.191,
+      "taxonomy_hits": "5/5"
+    }
+  },
+  "results": [
+    {
+      "label": "LY0-correct",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Generate a 30-second upbeat lofi jazz clip for a study session and save to GCS bucket mybucket with filename study_jazz.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "upbeat lofi jazz with warm piano chords and subtle tape crackle",
+            "model_id": "lyria-3-clip-preview",
+            "output_gcs_bucket": "mybucket",
+            "output_filename": "study_jazz"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for the music generation tool and provided all necessary parameters, including inferring a suitable model ID based on the requested duration and elaborating on the prompt."
+        }
+      }
+    },
+    {
+      "label": "LY1-wrong-model-param-name",
+      "kind": "broken",
+      "injected_fault": "wrong parameter name 'model' (schema expects 'model_id')",
+      "expected_taxonomy": "argument_name",
+      "prompt": "Generate a 30-second upbeat lofi jazz clip for a study session and save to GCS bucket mybucket with filename study_jazz.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "upbeat lofi jazz with warm piano chords and subtle tape crackle",
+            "model": "lyria-3-clip-preview",
+            "output_gcs_bucket": "mybucket",
+            "output_filename": "study_jazz"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.778,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 0.2,
+            "value_accuracy": 0.2,
+            "type_compliance": 0.2,
+            "format_compliance": 0.2,
+            "relevancy": 0.2
+          },
+          "failures": [
+            "argument_name",
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent correctly selected the tool and provided relevant values for most parameters. However, it used the incorrect parameter name 'model' instead of 'model_id', which is a critical error. This name mismatch leads to cascading penalties for value accuracy, type compliance, format compliance, and relevancy for that parameter."
+        }
+      }
+    },
+    {
+      "label": "LY2-wrong-bucket-param-name",
+      "kind": "broken",
+      "injected_fault": "wrong parameter name 'gcs_bucket_uri' (schema expects 'output_gcs_bucket')",
+      "expected_taxonomy": "argument_name",
+      "prompt": "Generate a 30-second upbeat lofi jazz clip for a study session and save to GCS bucket mybucket with filename study_jazz.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "upbeat lofi jazz with warm piano chords and subtle tape crackle",
+            "model_id": "lyria-3-clip-preview",
+            "gcs_bucket_uri": "gs://mybucket/music/",
+            "output_filename": "study_jazz"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.889,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.6666666666666666
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 0.7,
+            "value_accuracy": 0.7,
+            "type_compliance": 0.7,
+            "format_compliance": 0.7,
+            "relevancy": 0.2
+          },
+          "failures": [
+            "argument_name",
+            "argument_value",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent correctly selected the tool and most parameters. However, it used an incorrect parameter name (`gcs_bucket_uri` instead of `output_gcs_bucket`) and provided a full GCS URI instead of just the bucket name, leading to errors in argument naming, value, format, and relevancy."
+        }
+      }
+    },
+    {
+      "label": "LY3-hallucinated-model",
+      "kind": "broken",
+      "injected_fault": "model ID does not exist in schema or registry",
+      "expected_taxonomy": "argument_value",
+      "prompt": "Generate a 30-second upbeat lofi jazz clip for a study session and save to GCS bucket mybucket with filename study_jazz.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "upbeat lofi jazz with warm piano chords and subtle tape crackle",
+            "model_id": "lyria-ultra-composer-001",
+            "output_gcs_bucket": "mybucket"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.806,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.4166666666666667
+          },
+          "argument_subscores": {
+            "completeness": 0.7,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.2,
+            "type_compliance": 0.2,
+            "format_compliance": 0.2,
+            "relevancy": 0.2
+          },
+          "failures": [
+            "argument_value",
+            "argument_completeness"
+          ],
+          "rationale": "The agent used an invalid model_id that is not supported by the tool's specification. Additionally, it failed to provide the 'output_filename' parameter, which was explicitly requested by the user."
+        }
+      }
+    },
+    {
+      "label": "LY4-missing-required-prompt",
+      "kind": "broken",
+      "injected_fault": "missing required 'prompt' parameter",
+      "expected_taxonomy": "argument_completeness",
+      "prompt": "Generate a 30-second upbeat lofi jazz clip for a study session and save to GCS bucket mybucket with filename study_jazz.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "model_id": "lyria-3-clip-preview",
+            "output_gcs_bucket": "mybucket"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.794,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3833333333333333
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.1,
+            "type_compliance": 0.1,
+            "format_compliance": 0.1,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_completeness"
+          ],
+          "rationale": "The agent failed to include the required 'prompt' parameter, which is essential for music generation. It also missed the 'output_filename' parameter requested by the user."
+        }
+      }
+    },
+    {
+      "label": "LY5-correct-full-track",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Compose a 2-minute cinematic orchestral ambient track without drums or heavy brass, saving to bucket mybucket.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "cinematic orchestral ambient soundtrack with sweeping strings",
+            "model_id": "lyria-3-pro-preview",
+            "negative_prompt": "drums, heavy brass, percussion",
+            "output_gcs_bucket": "mybucket",
+            "output_filename": "ambient_orchestra"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for music generation, selected the appropriate model for the requested duration, and accurately extracted all parameters from the user's request."
+        }
+      }
+    },
+    {
+      "label": "LY6-malformed-sample-count",
+      "kind": "broken",
+      "injected_fault": "sample_count must be a positive integer (minimum 1)",
+      "expected_taxonomy": "argument_format",
+      "prompt": "Compose a 2-minute cinematic orchestral ambient track without drums or heavy brass, saving to bucket mybucket.",
+      "calls": [
+        {
+          "function_name": "lyria_generate_music",
+          "parameters": {
+            "prompt": "cinematic orchestral ambient soundtrack with sweeping strings",
+            "model_id": "lyria-3-pro-preview",
+            "sample_count": -5,
+            "output_gcs_bucket": "mybucket"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.778,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent correctly selected the tool and model for the requested duration and output location. However, it provided an invalid value for 'sample_count' (-5, violating the minimum of 1) and failed to include the user's negative constraints in a 'negative_prompt'."
+        }
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@ analysis, the spike code, the saved artifacts, and a narrative write-up.
 
 | Directory | Paper | What it reproduces |
 |---|---|---|
-| [`agent-seer-mcp-tool-calling/`](./agent-seer-mcp-tool-calling/) | Agent Seer: Synthesizing Scenarios from Specification Understanding (arXiv 2608.26133) | Spec-driven, execution-free evaluation of agent tool-calling, applied to a generative-media MCP server (`mcp-veo-go`). Includes the negative finding on schema-blind judging and the capability-matrix fix. |
+| [`agent-seer-mcp-tool-calling/`](./agent-seer-mcp-tool-calling/) | Agent Seer: Synthesizing Scenarios from Specification Understanding ([arXiv:2608.26133](https://arxiv.org/abs/2608.26133)) | Spec-driven, execution-free evaluation of agent tool-calling, applied to a generative-media MCP server (`mcp-veo-go`). Includes the negative finding on schema-blind judging and the capability-matrix fix. |
 
 ## Layout of a reproduction
 

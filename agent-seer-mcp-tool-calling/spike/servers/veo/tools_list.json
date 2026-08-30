@@ -1,0 +1,460 @@
+{
+  "server": "mcp-veo-go",
+  "tools": [
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Extend an existing video using Veo. The input video must be MP4, 1-30s, 24fps, and 720p/1080p/4k in 16:9 or 9:16. Output is a 7s extension. Video is saved to GCS and optionally downloaded locally.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "mime_type": {
+            "description": "MIME type of the input video. Currently, only 'video/mp4' is supported. If not provided, assumed to be video/mp4.",
+            "type": "string"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Optional text prompt to guide video extension.",
+            "type": "string"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          },
+          "video_uri": {
+            "description": "GCS URI of the input video for extension (e.g., gs://your-bucket/input-video.mp4).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_uri"
+        ],
+        "type": "object"
+      },
+      "name": "veo_extend_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Generate a video using a first and last frame image using Veo. Video is saved to GCS and optionally downloaded locally. Supported image MIME types: image/jpeg, image/png.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Duration of the generated video in seconds. Note: the supported duration range is model-dependent.",
+            "type": "number"
+          },
+          "first_image_uri": {
+            "description": "GCS URI of the first input image (e.g., gs://your-bucket/first-image.png).",
+            "type": "string"
+          },
+          "first_mime_type": {
+            "description": "MIME type of the first image. Supported types are 'image/jpeg' and 'image/png'. If not provided, inferred from the first_image_uri extension.",
+            "type": "string"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "last_image_uri": {
+            "description": "GCS URI of the last input image (e.g., gs://your-bucket/last-image.png).",
+            "type": "string"
+          },
+          "last_mime_type": {
+            "description": "MIME type of the last image. Supported types are 'image/jpeg' and 'image/png'. If not provided, inferred from the last_image_uri extension.",
+            "type": "string"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Optional text prompt to guide video generation.",
+            "type": "string"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "first_image_uri",
+          "last_image_uri"
+        ],
+        "type": "object"
+      },
+      "name": "veo_first_last_to_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Generate a video from an input image (and optional prompt) using Veo. Video is saved to GCS and optionally downloaded locally. Supported image MIME types: image/jpeg, image/png.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Duration of the generated video in seconds. Note: the supported duration range is model-dependent.",
+            "type": "number"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "image_uri": {
+            "description": "GCS URI of the input image for video generation (e.g., gs://your-bucket/input-image.png).",
+            "type": "string"
+          },
+          "mime_type": {
+            "description": "MIME type of the input image. Supported types are 'image/jpeg' and 'image/png'. If not provided, an attempt will be made to infer it from the image_uri extension.",
+            "type": "string"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Optional text prompt to guide video generation from the image.",
+            "type": "string"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "image_uri"
+        ],
+        "type": "object"
+      },
+      "name": "veo_i2v"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Generate a video using reference images (up to 3) and a text prompt using Veo. Video is saved to GCS and optionally downloaded locally. Supported image MIME types: image/jpeg, image/png.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Duration of the generated video in seconds. Note: the supported duration range is model-dependent.",
+            "type": "number"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Text prompt for video generation (Required when using reference images).",
+            "type": "string"
+          },
+          "reference_image_uris": {
+            "description": "Array of up to 3 GCS URIs of input reference images (e.g., [\"gs://your-bucket/ref1.png\"]).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reference_mime_types": {
+            "description": "Optional array of MIME types corresponding to reference_image_uris. If provided, must match the length of URIs. If not provided, inferred from extensions.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "prompt",
+          "reference_image_uris"
+        ],
+        "type": "object"
+      },
+      "name": "veo_ingredients_to_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Generate a video using reference images (up to 3) and a text prompt using Veo. Video is saved to GCS and optionally downloaded locally. Supported image MIME types: image/jpeg, image/png.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Duration of the generated video in seconds. Note: the supported duration range is model-dependent.",
+            "type": "number"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Text prompt for video generation (Required when using reference images).",
+            "type": "string"
+          },
+          "reference_image_uris": {
+            "description": "Array of up to 3 GCS URIs of input reference images (e.g., [\"gs://your-bucket/ref1.png\"]).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reference_mime_types": {
+            "description": "Optional array of MIME types corresponding to reference_image_uris. If provided, must match the length of URIs. If not provided, inferred from extensions.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "prompt",
+          "reference_image_uris"
+        ],
+        "type": "object"
+      },
+      "name": "veo_reference_to_video"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Generate a video from a text prompt using Veo. Video is saved to GCS and optionally downloaded locally.",
+      "inputSchema": {
+        "properties": {
+          "aspect_ratio": {
+            "description": "Aspect ratio of the generated videos. Note: supported aspect ratios are model-dependent.",
+            "type": "string"
+          },
+          "bucket": {
+            "description": "Google Cloud Storage bucket where the API will save the generated video(s) (e.g., your-bucket/output-folder or gs://your-bucket/output-folder). If not provided, GENMEDIA_BUCKET env var will be used. One of them is required.",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Duration of the generated video in seconds. Note: the supported duration range is model-dependent.",
+            "type": "number"
+          },
+          "generate_audio": {
+            "default": true,
+            "description": "Optional. Generate audio for the video. Only supported by Veo 3 models. Defaults to true.",
+            "type": "boolean"
+          },
+          "model": {
+            "default": "veo-3.1-fast-generate-001",
+            "description": "Model for video generation. Can be a full model ID or a common name. Supported models:\n- *veo-2.0-generate-001* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2*\n- *veo-2.0-generate-exp* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Exp*\n- *veo-2.0-generate-preview* (Durations: [5, 6, 7, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 2 Preview*\n- *veo-3.0-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0 Fast*\n- *veo-3.0-generate-001* (Durations: [4, 6, 8]s, Max Videos: 2, Ratios: 16:9) Aliases: *Veo 3.0*\n- *veo-3.1-fast-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast*\n- *veo-3.1-fast-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Fast Preview*\n- *veo-3.1-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1*\n- *veo-3.1-generate-preview* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Preview*\n- *veo-3.1-lite-generate-001* (Durations: [4, 6, 8]s, Max Videos: 4, Ratios: 16:9, 9:16) Aliases: *Veo 3.1 Lite*\n",
+            "type": "string"
+          },
+          "num_videos": {
+            "default": 1,
+            "description": "Number of videos to generate. Note: the maximum is model-dependent.",
+            "type": "number"
+          },
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to download the generated video(s) to. Filenames will be generated automatically.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Base name for the output file(s). The extension is forced to the true video type (e.g. .mp4). For a single video the name is used as-is (foo.mp4); for multiple videos a 1-based suffix is inserted before the extension (foo_1.mp4, foo_2.mp4, ...). For GCS output the API-written objects are copy-renamed to this name after generation (adds a short GCS copy latency; larger videos add copy time proportional to size).",
+            "type": "string"
+          },
+          "person_generation": {
+            "default": "allow_adult",
+            "description": "Whether to allow generating videos with people. Supported values: 'dont_allow', 'allow_adult'.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "Text prompt for video generation.",
+            "type": "string"
+          },
+          "seed": {
+            "description": "Optional. Non-negative integer seed for best-effort reproducible video generation.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "name": "veo_t2v"
+    }
+  ]
+}

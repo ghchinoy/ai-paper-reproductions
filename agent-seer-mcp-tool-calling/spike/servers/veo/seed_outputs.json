@@ -1,0 +1,37 @@
+{
+  "_note": "Real mcp-veo-go success-response shape, reused to raise Stage-3 mock grounding above 'low'. Derived from video_logic.go (resultText + appendVeoResourceLinks) and smoke_generate_and_verify.sh (veo_t2v, model veo-3.1-fast-generate-001, GCS bucket mode). The MCP CallToolResult carries a text content block plus one resource_link content item per generated video.",
+  "veo_t2v": {
+    "grounding": "high",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m34s. Videos saved to GCS: gs://ghchinoy-genai-sa-genmedia/smoke_20260829-224500/mcp-veo-go/smoke_veo.mp4."
+        },
+        {
+          "type": "resource_link",
+          "uri": "gs://ghchinoy-genai-sa-genmedia/smoke_20260829-224500/mcp-veo-go/smoke_veo.mp4",
+          "mimeType": "video/mp4",
+          "description": "veo output 1 of 1"
+        }
+      ]
+    }
+  },
+  "veo_i2v": {
+    "grounding": "medium",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Generated 1 video(s) using model veo-3.1-generate-001. This took about 1m58s. Videos saved to GCS: gs://ghchinoy-genai-sa-genmedia/i2v_out/animated.mp4."
+        },
+        {
+          "type": "resource_link",
+          "uri": "gs://ghchinoy-genai-sa-genmedia/i2v_out/animated.mp4",
+          "mimeType": "video/mp4",
+          "description": "veo output 1 of 1"
+        }
+      ]
+    }
+  }
+}

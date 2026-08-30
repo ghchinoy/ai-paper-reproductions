@@ -1,0 +1,30 @@
+{
+  "gemini-2.5-flash-image": {
+    "CanonicalName": "gemini-2.5-flash-image",
+    "Aliases": ["Nano Banana", "nano-banana"],
+    "SupportedAspectRatios": ["1:1", "3:2", "2:3", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
+    "SupportedImageSizes": [],
+    "Description": "Gemini 2.5 Flash Image. Does not support image_size (silently ignored/unsupported)."
+  },
+  "gemini-3-pro-image": {
+    "CanonicalName": "gemini-3-pro-image",
+    "Aliases": ["Nano Banana Pro", "Gemini 3 Pro Image"],
+    "SupportedAspectRatios": ["1:1", "3:2", "2:3", "3:4", "1:4", "4:1", "4:3", "4:5", "5:4", "1:8", "8:1", "9:16", "16:9", "21:9", "9:21"],
+    "SupportedImageSizes": ["1K", "2K", "4K"],
+    "Description": "Gemini 3 Pro Image. Complex reasoning and editing."
+  },
+  "gemini-3.1-flash-image": {
+    "CanonicalName": "gemini-3.1-flash-image",
+    "Aliases": ["Nano Banana 2"],
+    "SupportedAspectRatios": ["1:1", "3:2", "2:3", "3:4", "1:4", "4:1", "4:3", "4:5", "5:4", "1:8", "8:1", "9:16", "16:9", "21:9", "9:21"],
+    "SupportedImageSizes": ["512", "1K", "2K", "4K"],
+    "Description": "Gemini 3.1 Flash Image. High speed and multi-resolution."
+  },
+  "gemini-3.1-flash-lite-image": {
+    "CanonicalName": "gemini-3.1-flash-lite-image",
+    "Aliases": ["Nano Banana 2 Lite"],
+    "SupportedAspectRatios": ["1:1", "1:4", "4:1", "1:8", "8:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
+    "SupportedImageSizes": ["1K"],
+    "Description": "Gemini 3.1 Flash Lite Image. 1K resolution only (2K/4K/512 unsupported)."
+  }
+}

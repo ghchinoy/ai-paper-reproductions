@@ -1,0 +1,81 @@
+{
+  "tools": [
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Synthesizes speech from text using Google Cloud TTS with Chirp3-HD voices. Returns audio data and optionally saves it locally.",
+      "inputSchema": {
+        "properties": {
+          "output_directory": {
+            "description": "Optional. If provided, specifies a local directory to save the generated audio file to. Filenames will be generated automatically using the prefix. If not provided, audio data is returned in the response.",
+            "type": "string"
+          },
+          "output_filename": {
+            "description": "Optional. Client-predictable base name for the saved audio file. The extension is forced to the true audio media type (.wav). Used as-is for a single file (e.g. 'greeting.wav'); multiple artifacts are suffixed '_1', '_2', ... before the extension. Takes precedence over the deprecated output_filename_prefix. An existing file of the same name is overwritten.",
+            "type": "string"
+          },
+          "output_filename_prefix": {
+            "default": "chirp_audio",
+            "description": "Optional (deprecated; use output_filename). A prefix for the output WAV filename if saving locally. A voice name, timestamp and .wav extension will be appended.",
+            "type": "string"
+          },
+          "pronunciation_encoding": {
+            "default": "ipa",
+            "description": "Optional. The phonetic encoding used for the 'pronunciations' array. Can be 'ipa' or 'xsampa'. Defaults to 'ipa'.",
+            "enum": [
+              "ipa",
+              "xsampa"
+            ],
+            "type": "string"
+          },
+          "pronunciations": {
+            "description": "Optional. An array of custom pronunciations. Each item should be a string in the format 'phrase:phonetic_representation' (e.g., 'tomato:t\u0259\u02c8me\u026ato\u028a'). All items must use the same encoding specified by 'pronunciation_encoding'.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "text": {
+            "description": "The text to synthesize into speech.",
+            "type": "string"
+          },
+          "voice_name": {
+            "description": "Optional. The specific Chirp3-HD voice name to use (e.g., 'en-US-Chirp3-HD-Zephyr'). If not provided, defaults to 'en-US-Chirp3-HD-Zephyr' if available, otherwise the first available Chirp3-HD voice.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "name": "chirp_tts"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "description": "Lists Chirp3-HD voices, filtered by the provided language (either descriptive name or BCP-47 code).",
+      "inputSchema": {
+        "properties": {
+          "language": {
+            "description": "The language to filter voices by. Can be a descriptive name (e.g., 'English (United States)') or a BCP-47 code (e.g., 'en-US').",
+            "type": "string"
+          }
+        },
+        "required": [
+          "language"
+        ],
+        "type": "object"
+      },
+      "name": "list_chirp_voices"
+    }
+  ]
+}

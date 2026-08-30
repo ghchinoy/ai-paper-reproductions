@@ -1,0 +1,20 @@
+{
+  "_note": "Real mcp-chirp3-go success-response shape.",
+  "chirp_tts": {
+    "grounding": "high",
+    "example_output": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Synthesized 1 speech sample(s) using voice en-US-Chirp3-HD-Zephyr. Output saved to: /tmp/voiceover.wav"
+        },
+        {
+          "type": "resource_link",
+          "uri": "file:///tmp/voiceover.wav",
+          "mimeType": "audio/wav",
+          "description": "chirp tts audio output"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "tools": [
+    {
+      "name": "lyria_generate_music",
+      "description": "Generates music from a text prompt using Lyria. Optionally saves to GCS and/or a local directory. Audio data is returned directly ONLY if neither GCS nor local path is specified.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Text prompt for music generation."
+          },
+          "model_id": {
+            "type": "string",
+            "default": "lyria-3-clip-preview",
+            "description": "The specific Lyria model ID to use. Supported models:\n- *lyria-002* Aliases: *Lyria 2*\n- *lyria-3-clip-preview* Aliases: *Lyria 3 Clip*\n- *lyria-3-pro-preview* Aliases: *Lyria 3 Pro*"
+          },
+          "negative_prompt": {
+            "type": "string",
+            "description": "Optional. A negative prompt to instruct the model to avoid certain characteristics."
+          },
+          "output_gcs_bucket": {
+            "type": "string",
+            "description": "Optional. Google Cloud Storage bucket name. If provided, audio is saved to GCS and direct audio data is NOT returned."
+          },
+          "local_path": {
+            "type": "string",
+            "description": "Optional. Local directory path. If provided, audio is saved locally and direct audio data is NOT returned (unless GCS is also not specified)."
+          },
+          "output_filename": {
+            "type": "string",
+            "description": "Optional. Client-predictable base name for the generated file."
+          },
+          "sample_count": {
+            "type": "number",
+            "default": 1,
+            "minimum": 1,
+            "description": "Optional. Number of music samples (uint32) to generate. Currently, only the first sample is processed and returned."
+          },
+          "seed": {
+            "type": "number",
+            "description": "Optional. Random seed (uint32) for music generation for reproducibility."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
+}

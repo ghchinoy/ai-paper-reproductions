@@ -1,0 +1,82 @@
+{
+  "veo-2.0-generate-001": {
+    "SupportsGenerateAudio": "false",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{5",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "false",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-2.0-generate-exp": {
+    "SupportsGenerateAudio": "false",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{5",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "true"
+  },
+  "veo-2.0-generate-preview": {
+    "SupportsGenerateAudio": "false",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{5",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-3.0-generate-001": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"}",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "2",
+    "SupportsFirstLast": "false",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-3.0-fast-generate-001": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"}",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "2",
+    "SupportsFirstLast": "false",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-3.1-generate-001": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-3.1-fast-generate-001": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "false"
+  },
+  "veo-3.1-generate-preview": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "true"
+  },
+  "veo-3.1-fast-generate-preview": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "true"
+  },
+  "veo-3.1-lite-generate-001": {
+    "SupportsGenerateAudio": "true",
+    "SupportedAspectRatios": "[]string{\"16:9\"",
+    "SupportedDurations": "[]int32{4",
+    "MaxVideos": "4",
+    "SupportsFirstLast": "true",
+    "SupportsReferenceImage": "false"
+  }
+}
