@@ -42,6 +42,13 @@
   set text(font: "New Computer Modern", size: 10pt)
   set par(justify: true, leading: 0.65em)
 
+  // Level 3 headings: unnumbered bold lead-in (for pipeline stages & sub-topics)
+  show heading.where(level: 3): it => {
+    v(0.6em)
+    text(10pt, weight: "bold", it.body)
+    v(0.3em)
+  }
+
   // Table styling: compact booktabs theme (no vertical grid lines, compact font)
   show table: set text(size: 8.2pt)
   set table(

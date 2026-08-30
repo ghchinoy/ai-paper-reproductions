@@ -8,7 +8,7 @@
   abstract: [Autonomous AI agents that call external tools need realistic test scenarios. Building them by hand does not scale, and live execution is slow and costly in generative-media domains. Agent Seer (arXiv:2608.26133) generates these scenarios from tool specifications alone. We reproduce its pipeline across three production media servers: Google Veo, Nanobanana, and Lyria. We find a critical gap we call Schema-Blindness. Standard JSON schemas hide runtime model constraints, so an LLM judge scores broken calls as perfect ($"TC" = 1.000$). Injecting a machine-readable capability matrix fixes this. It restores discrimination gaps of $>= 0.191$ and widens the image-generation margin by 36.1%. We also propose a three-layer taxonomy that separates cheap orchestration checks from costly media-quality evaluation.],
 )
 
-= 1. Introduction
+= Introduction
 
 The deployment of large language model (LLM)-based agents capable of autonomously orchestrating external tools is increasingly central to modern enterprise automation. In creative and generative-media workflows—such as automated video campaign synthesis, multi-model image generation, and dynamic soundtrack composition—agents must coordinate complex, multi-parameter tool calls across evolving interfaces. Validating tool-use competence in these domains has become a critical gate for reliable deployment.
 
@@ -24,7 +24,7 @@ Recently, *Agent Seer* (Karumuri et al., arXiv:2608.26133) established that *too
 
 In this work, we deconstruct, empirically reproduce, and substantially extend the Agent Seer methodology across three production-grade generative-media MCP server suites: Google Veo (`mcp-veo-go`), Gemini Image / Nanobanana (`mcp-nanobanana-go`), and Google Lyria (`mcp-lyria-go`).
 
-== 1.1 The Primary Contributions
+== The Primary Contributions
 
 The primary contributions of this work are:
 
@@ -33,19 +33,19 @@ The primary contributions of this work are:
 3. *The Capability-Matrix Enrichment Fix:* We architect and validate a machine-readable capability matrix enrichment layer that bridges static JSON schemas and backend runtime registries, restoring robust discrimination gaps ($>= 0.191$) across all evaluated servers and expanding the image generation discrimination margin by $+36.1\%$.
 4. *A Three-Layer Generative Media Evaluation Taxonomy:* We formalize a decoupled architectural framework separating Infrastructure Liveness (Layer 0), Orchestration Correctness (Layer 1), and Perceptual Media Quality (Layer 2), enabling sub-second, zero-cost CI pull request gating.
 
-= 2. Background, Related Work & Positioning
+= Background, Related Work & Positioning
 
-== 2.1 Agent Tool-Calling Benchmarks & Synthetic Generation
+== Agent Tool-Calling Benchmarks & Synthetic Generation
 
 Agent evaluation has progressed from single-function prediction (e.g., ToolBench, Berkeley Function Calling Leaderboard / BFCL) to multi-turn, policy-grounded execution benchmarks. However, the majority of existing benchmarks require live tool execution (APIGen, TOUCAN) or hand-curated simulated environments ($tau$-bench, ToolSandbox). 
 
 Spec-only synthetic generation (such as DiGiT-TC and FuncBenchGen) has emerged to generate evaluation data directly from signatures. Agent Seer advances this paradigm by synthesizing not only user scenarios and oracle tool calls, but also calibrated, schema-valid mock tool responses that enable multi-turn conversational expansion without runtime dependencies.
 
-== 2.2 The Agent Seer Formulation
+== The Agent Seer Formulation
 
 Agent Seer converts raw MCP tool specifications into self-contained evaluation harnesses through a four-stage pipeline: Tool Interpretation (Stage 1), Scenario Generation (Stage 2), Mock Output Generation (Stage 3), and Multi-Turn Expansion (Stage 4). Transcripts are evaluated using an unsupervised LLM-as-judge rubric measuring *Tool-Calling Correctness ($"TC"$)* across 14 decomposed sub-dimensions and *Conversational Coherence ($"Coh"$)* across 5 qualitative dimensions.
 
-== 2.3 Generative-Media MCPs vs. Conventional Tool Suites
+== Generative-Media MCPs vs. Conventional Tool Suites
 
 The original Agent Seer study evaluated seven open-source MCP specifications: Redis, Git, Filesystem, Elasticsearch, Slack, Selenium, and Illustrator. These tools primarily represent deterministic data stores, operating system utilities, or UI automation frameworks where input parameters map directly to explicit JSON Schema properties.
 
@@ -56,14 +56,14 @@ In contrast, generative-media MCP suites introduce fundamental architectural dif
 
 These characteristics make generative-media MCP servers an ideal stress-test for specification-driven evaluation, while exposing the critical limitation of schema-blind judging.
 
-= 3. Specification-Driven Evaluation Pipeline & Scoring Mechanics
+= Specification-Driven Evaluation Pipeline & Scoring Mechanics
 
 #figure(
   image("asset-1788113828780670000.svg"),
   caption: [The Four-Stage Agent Seer Specification-Driven Evaluation Pipeline. Converts raw JSON-RPC schemas into complete evaluation trajectories using structured, unsupervised LLM tasks.]
 )
 
-== 3.1 Four-Stage Spec-Driven Pipeline Deconstruction
+== Four-Stage Spec-Driven Pipeline Deconstruction
 
 The synthetic evaluation pipeline transforms raw MCP `tools/list` declarations into validated evaluation harnesses through four sequential stages:
 
@@ -88,7 +88,7 @@ In our reproduction, seeding Stage 3 with real response fixtures (`spike/seed_ou
 === Stage 4: Multi-Turn Expansion
 Composite workflows are segmented at natural phase boundaries to create multi-turn dialogues exercising multi-step dependency chains and multi-hop information synthesis (aligned with BFCL v3 patterns), where follow-up prompts explicitly reference identifiers emitted in prior mock outputs.
 
-== 3.2 Decomposed LLM-as-Judge Rubric
+== Decomposed LLM-as-Judge Rubric
 
 Evaluation separates assessment into *Tool-Calling Correctness ($"TC"$)* and *Conversational Coherence ($"Coh"$)*.
 
@@ -125,7 +125,7 @@ Dimension and composite scores aggregate as:
 4. $D_("ordering") = 1 / |cal(K)_("ord")| sum_(k in cal(K)_("ord")) op("norm")_(10)(x_k)$ (omitted when $M=1$)
 5. $"TC"_("overall") = 1 / |cal(D)_("active")| sum_(d in cal(D)_("active")) D_d$
 
-== 3.3 Cascading Penalty Mechanics & Failure Propagation Proof
+== Cascading Penalty Mechanics & Failure Propagation Proof
 
 Naive LLM judges suffer from *linear averaging dilution*: if an agent emits a tool call with a completely invalid parameter name, a linear average over 6 argument subdimensions yields $D_("arguments") = 5/6 = 0.833$ and an inflated composite $"TC" = 0.944$ (a False Pass).
 
@@ -141,28 +141,28 @@ To prevent dilution, the rubric enforces *mandatory cascading penalties*:
 
 A single syntax error immediately eliminates $33.3\%$ of the total available score.
 
-== 3.4 Conversational Coherence ($"Coh"$) Formulation
+== Conversational Coherence ($"Coh"$) Formulation
 
 Conversational Coherence evaluates natural language output across 5 dimensions (Logical Flow, Completeness, Conciseness, Relevance, Context Retention) on a 3-point scale ($1 = "Poor", 2 = "Adequate", 3 = "Good"$). Scores normalize via $op("norm")_3(x) = (x - 1) / 2.0$ and aggregate via arithmetic mean:
 
 $ "Coh"_("overall") = 1 / |cal(V)_("active")| sum_(v in cal(V)_("active")) op("norm")_3(v) $
 
-= 4. Primary Finding: Schema-Blindness & Capability-Matrix Grounding
+= Primary Finding: Schema-Blindness & Capability-Matrix Grounding
 
-== 4.1 The Mechanism of Schema-Blindness
+== The Mechanism of Schema-Blindness
 
 In modern MCP server implementations, tool schemas published via `tools/list` are decoupled from backend runtime registries:
 1. *Loose Schema Typing:* Parameter schemas declare permissive generic types (e.g., `aspect_ratio: { "type": "string" }`).
 2. *Hidden Backend Constraints:* Exact compatibility rules reside in Go model registries (`SupportedVeoModels`, `capabilities.json`).
 3. *Judge Information Asymmetry:* The LLM judge evaluates calls strictly against the schema in its prompt. If a constraint is absent from `tools/list`, the judge has zero basis to penalize the violation.
 
-== 4.2 Empirical Baseline False Passes
+== Empirical Baseline False Passes
 
 During baseline runs with Gemini 2.5 Flash (Temperature 0.0):
 - *Veo Case `A1-wrong-model-value`:* The agent called `veo_t2v` with `model: "veo-2.0-generate-001"` and `generate_audio: true`. Veo 2.0 physically rejects audio generation. Because `tools/list` did not document model-specific audio compatibility, the baseline judge awarded a *flawless $"TC" = 1.000$*.
 - *Nanobanana Case `NB1-illegal-size-on-2.5`:* The agent called `gemini-2.5-flash-image` with `image_size: "4K"`. Flash 2.5 does not support resolution scaling. The un-enriched judge granted a near-pass score of *$"TC" = 0.944$*.
 
-== 4.3 Capability Matrix Injection Architecture
+== Capability Matrix Injection Architecture
 
 To resolve schema-blindness, we architected a *Capability Matrix Enrichment* layer that extracts runtime registries and appends a machine-readable capability contract into the judge's prompt context:
 
@@ -188,7 +188,7 @@ To resolve schema-blindness, we architected a *Capability Matrix Enrichment* lay
 }
 ```
 
-== 4.4 Restoration of Clean Discrimination
+== Restoration of Clean Discrimination
 
 #figure(
   nanobanana-chart(),
@@ -200,11 +200,11 @@ Upon injecting the capability matrix, the judge immediately enforced hidden cons
 - *Nanobanana Case NB1:* $"TC"$ collapsed from *$0.944 -> 0.778$* ($Delta = -0.166$). Argument score collapsed to $0.333$.
 - *Valid Calls Preserved:* Correct baseline cases remained pristine (`A0-correct`: $0.994$, `NB0-correct`: $0.989$, `NB6-correct`: $1.000$, `LY0-correct`: $1.000$).
 
-= 5. Experimental Evaluation across Three Generative-Media MCP Server Suites
+= Experimental Evaluation across Three Generative-Media MCP Server Suites
 
 All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, Temperature 0.0) and cross-validated with Gemini 2.5 Pro and Gemma 2 27B IT, evaluated across 26 distinct test cases in the reproduction repository (`spike/artifacts/`).
 
-== 5.1 Comprehensive Multi-Server Summary
+== Comprehensive Multi-Server Summary
 
 #table(
   columns: (1.6fr, 1fr, 1.2fr, 1.2fr, 1.8fr, 1.2fr),
@@ -222,7 +222,7 @@ All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, T
   table.hline(stroke: 0.9pt),
 )
 
-== 5.2 Server Suite 1: Google Veo (`mcp-veo-go`)
+== Server Suite 1: Google Veo (`mcp-veo-go`)
 
 The Veo suite evaluates 11 hand-authored transcripts covering 6 distinct tools and 9 injected failure modes.
 
@@ -247,7 +247,7 @@ The Veo suite evaluates 11 hand-authored transcripts covering 6 distinct tools a
   table.hline(stroke: 0.9pt),
 )
 
-== 5.3 Server Suite 2: Gemini Image / Nanobanana (`mcp-nanobanana-go`)
+== Server Suite 2: Gemini Image / Nanobanana (`mcp-nanobanana-go`)
 
 The Nanobanana suite evaluates 8 test cases covering multimodal inputs, resolution scaling, aspect ratio limits, and parameter naming rules.
 
@@ -271,7 +271,7 @@ The Nanobanana suite evaluates 8 test cases covering multimodal inputs, resoluti
 
 *Key Metric:* Capability matrix enrichment expanded Nanobanana's discrimination gap from *0.158 to 0.215*, representing a *$+36.1\%$ expansion in discriminating power*.
 
-== 5.4 Server Suite 3: Google Lyria (`mcp-lyria-go`)
+== Server Suite 3: Google Lyria (`mcp-lyria-go`)
 
 The Lyria suite evaluates 7 test cases covering audio generation durations, parameter name variations (`model_id` vs `model`), GCS bucket naming, and negative prompt conditioning.
 
@@ -292,7 +292,7 @@ The Lyria suite evaluates 7 test cases covering audio generation durations, para
   table.hline(stroke: 0.9pt),
 )
 
-== 5.5 Cross-Server Production Pipeline Evaluation
+== Cross-Server Production Pipeline Evaluation
 
 We also validated multi-turn capabilities over a four-step cross-server media pipeline (`cross_server_media_production`) where inputs are chained from Lyria to Nanobanana to Veo.
 
@@ -312,20 +312,20 @@ We also validated multi-turn capabilities over a four-step cross-server media pi
 
 The cross-server run confirms that while selection remains resilient, out-of-order execution (*CS3*) completely derails the model's pipeline state representation, collapsing the Ordering dimension to *0.000* and overall $"TC"$ to *0.517*.
 
-= 6. Discussion: Architectural Boundaries & Evaluation Robustness
+= Discussion: Architectural Boundaries & Evaluation Robustness
 
 #figure(
   image("asset-1788113828780668000.svg"),
   caption: [The Three-Layer Generative Media Evaluation Stack. Agent Seer isolates and evaluates Layer 1 (Orchestration Correctness) independently of Layer 0 (Infrastructure) and Layer 2 (Perceptual Media Quality) to minimize latency, costs, and defect attribution noise.]
 )
 
-== 6.1 Why Orchestration Must Be Decoupled from Perceptual Evaluation
+== Why Orchestration Must Be Decoupled from Perceptual Evaluation
 
 1. *Defect Attribution Precision:* In an integrated end-to-end test, a video generation failure could stem from an orchestration error (agent passed an incompatible aspect ratio), a network error (GCS bucket permission denial), or a diffusion failure (model generated visual artifacts). Layer 1 evaluation isolates agent cognitive defects with zero confounding noise from downstream generative models.
 2. *Cost and Latency Decoupling:* Rendering 100 scenario permutations through live video diffusion models on Vertex AI takes hours and incurs substantial GPU billing. Agent Seer evaluates the exact same 100 scenario trajectories in seconds at near-zero inference cost using synthetic mock outputs.
 3. *Deterministic CI Gating:* Layer 1 transcript evaluation at Temperature 0.0 with explicit capability contracts provides a deterministic, reproducible gate for continuous integration pull requests.
 
-== 6.2 Judge Circularity Mitigations & Out-of-Family Robustness
+== Judge Circularity Mitigations & Out-of-Family Robustness
 
 Evaluating LLM outputs using another LLM introduces risks of self-evaluation bias, family circularity, and scoring drift. The Agent Seer architecture deploys four defensive mitigations:
 - *Evaluator-Generator Capacity Asymmetry:* The scenario generation pipeline utilizes `gemini-2.5-flash-lite` operating at Temperature $0.7$ with structured JSON constraints to encourage creative scenario diversity. Conversely, the evaluation harness utilizes `gemini-2.5-flash` or `gemini-2.5-pro` strictly pinned at *Temperature $0.0$* to guarantee determinism.
@@ -333,13 +333,57 @@ Evaluating LLM outputs using another LLM introduces risks of self-evaluation bia
 - *Prompt & Task Decoupling:* The TC Judge and Coherence Judge execute in completely isolated contexts with zero shared memory.
 - *Taxonomy-Constrained Rubric:* Discrete categorical fault attribution is forced rather than unconstrained floating-point scoring.
 
-= 7. Conclusion
+= Conclusion
 
 This work presented an empirical reproduction and extension of the specification-driven evaluation methodology of *Agent Seer* across three production-grade generative-media MCP suites. While the methodology successfully eliminates the cold-start benchmark curation bottleneck and achieves 100% tool coverage, our empirical findings reveal that raw JSON schemas are vulnerable to *Schema-Blindness*. Injecting machine-readable capability matrices restores clean discrimination gaps ($>= 0.191$) and expands discrimination margins by $+36.1\%$, establishing a robust, decoupled foundation for continuous integration evaluation of autonomous AI agents.
 
-= Appendix A: Independent Reproduction & Verification Guide
+#show: arkheion-appendices
+
+= Independent Reproduction & Verification Guide
 
 To independently reproduce the empirical scores, deltas, and tables documented in this technical report, execute the following commands in the workspace:
+
+```bash
+# 1. Run Baseline Veo Discrimination Test (Flash & Pro Judges)
+python3 agent-seer-mcp-tool-calling/spike/discrimination_test.py --second-judge
+
+# 2. Run Nanobanana Baseline & Enriched Discrimination Tests
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server nanobanana
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server nanobanana --enriched
+
+# 3. Run Lyria Baseline & Enriched Discrimination Tests
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria --enriched
+
+# 4. Verify Mathematical Scoring Assertions
+python3 -c '
+import sys
+sys.path.insert(0, "agent-seer-mcp-tool-calling/spike")
+import scoring
+
+# Verify Perfect Call Score
+perfect = {
+    "usage": {"necessity": 10, "overuse_detection": 10},
+    "selection": {"correctness": 10, "specificity": 10, "completeness": 10},
+    "ordering": {"not_applicable": True},
+    "arguments": {"completeness": 10, "name_accuracy": 10, "value_accuracy": 10, "type_compliance": 10, "format_compliance": 10, "relevancy": 10},
+    "failures": [], "rationale": "perfect"
+}
+assert scoring.aggregate_tc(perfect)["tc_overall"] == 1.0
+
+# Verify Cascading Parameter Name Collapse (1.0 -> 0.667)
+cascaded_name = {
+    "usage": {"necessity": 10, "overuse_detection": 10},
+    "selection": {"correctness": 10, "specificity": 10, "completeness": 10},
+    "ordering": {"not_applicable": True},
+    "arguments": {"completeness": 0, "name_accuracy": 0, "value_accuracy": 0, "type_compliance": 0, "format_compliance": 0, "relevancy": 0},
+    "failures": ["argument_name"], "rationale": "bad name"
+}
+assert round(scoring.aggregate_tc(cascaded_name)["tc_overall"], 3) == 0.667
+print("All mathematical scoring assertions verified successfully.")
+'
+```
+
 
 ```bash
 # 1. Run Baseline Veo Discrimination Test (Flash & Pro Judges)
