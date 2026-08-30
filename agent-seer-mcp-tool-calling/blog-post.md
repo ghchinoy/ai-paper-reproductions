@@ -448,7 +448,7 @@ Our empirical reproduction offers clear, actionable architectural lessons for bo
 
 ## 8. What We Built Next: Uplifting to an Agent Plugin & Skill
 
-Following our empirical spike across the three generative-media servers, we uplifted the research prototype into a production Python package (`src/agent_seer/`), an installable CLI (`agent-seer`), and a standards-compliant Agent Plugin and Skill (`plugin.json`, `skills/agent-seer/`).
+Following our empirical spike across the three generative-media servers, we uplifted the research prototype into a production Python package (`src/agent_seer/`), an installable CLI (`agent-seer`), a standards-compliant Agent Plugin and Skill (`plugin.json`, `skills/agent-seer/`), and an arXiv-style academic preprint (`preprint/`).
 
 The production package turns the lessons of this reproduction into reusable developer tooling:
 
@@ -456,6 +456,7 @@ The production package turns the lessons of this reproduction into reusable deve
 2. **Capability-Enriched LLM Judge (`AgentSeerJudge`):** Reconstructed decomposed rubrics (`ToolSelection`, `ToolSequence`, `ArgumentValue`, `ArgumentCompleteness`, `ArgumentFormat`) with capability matrix context injection and dual-client support (Gemini via Vertex AI and Gemma via Model Garden or local OpenAI-compatible endpoints).
 3. **Synthetic Scenario & DAG Generator (`SyntheticHarnessGenerator`):** Specification-driven synthetic test generator with multi-server cross-tool choreography, seed output grounding, and fault injection.
 4. **CLI & Agent Packaging:** An `agent-seer` CLI with `inspect`, `lint`, and `eval` commands, alongside agent-friendly plugin and skill manifests for autonomous coding agents.
+5. **Academic Preprint:** A formal arXiv-style preprint (*Agent Seer Meets Schema-Blindness: Spec-Driven Evaluation of Generative-Media MCP Agents*) typeset via Syntaxis with clean booktabs tables and native charts ([`preprint/agent-seer-preprint.pdf`](./preprint/agent-seer-preprint.pdf)).
 
 > **Validation Note:** The production package passes 224 unit, integration, and adversarial tests in CI, but has not yet been run as a live evaluation against the original Veo, Nanobanana, and Lyria empirical discrimination baselines.
 
@@ -467,12 +468,15 @@ Generative media agents represent the cutting edge of AI capability—but buildi
 
 By adopting **specification-driven scenario generation (Agent Seer)** and reinforcing it with **machine-readable capability matrices**, engineering teams can build fast, deterministic, zero-cost CI pipelines that catch subtle orchestration bugs before they ever reach production.
 
+For the formal mathematical proofs, circularity diagnostics, and complete empirical tables, read our [arXiv-style preprint](./preprint/agent-seer-preprint.pdf) or explore the reproduction deliverables below.
+
 *Grade the choreography. Ground the judge. Ship with confidence.*
 
 ---
 
 ### Artifact & Reproduction Index
 - **Reference Paper:** *Agent Seer: Synthesizing Scenarios from Specification Understanding* ([arXiv:2608.26133](https://arxiv.org/abs/2608.26133))
+- **Academic Preprint (arXiv-style):** [`preprint/agent-seer-preprint.pdf`](./preprint/agent-seer-preprint.pdf) (Typst source: [`agent-seer-preprint.typ`](./preprint/agent-seer-preprint.typ))
 - **Production Package & CLI:** `agent-seer-mcp-tool-calling/src/agent_seer/` (`agent-seer`)
 - **Agent Plugin & Skill:** `agent-seer-mcp-tool-calling/plugin.json`, `agent-seer-mcp-tool-calling/skills/agent-seer/`
 - **Test Suite:** `agent-seer-mcp-tool-calling/tests/` (224 unit, integration, and adversarial tests)
