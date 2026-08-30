@@ -1,0 +1,37 @@
+[
+  {
+    "label": "A0-correct",
+    "tc": 0.994,
+    "failures": []
+  },
+  {
+    "label": "A1-wrong-model-value",
+    "tc": 0.8,
+    "failures": [
+      "argument_value",
+      "argument_type",
+      "argument_format",
+      "argument_relevancy"
+    ]
+  },
+  {
+    "label": "A2-illegal-enum",
+    "tc": 0.789,
+    "failures": [
+      "argument_value",
+      "argument_type",
+      "argument_format",
+      "argument_relevancy"
+    ]
+  },
+  {
+    "label": "A3-hallucinated-model",
+    "tc": 0.8,
+    "failures": [
+      "argument_value",
+      "argument_type",
+      "argument_format",
+      "argument_relevancy"
+    ]
+  }
+]

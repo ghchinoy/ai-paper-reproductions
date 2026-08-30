@@ -1,0 +1,315 @@
+[
+  {
+    "label": "A0-correct",
+    "kind": "correct",
+    "injected_fault": "none",
+    "expected_taxonomy": "none",
+    "tc_overall": 1.0,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 1.0
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 1.0,
+      "type_compliance": 1.0,
+      "format_compliance": 1.0,
+      "relevancy": 1.0
+    },
+    "failures": [],
+    "rationale": "The agent correctly identified the need to generate a video from a text prompt and used the appropriate tool with all parameters accurately extracted from the user's request.",
+    "tc_overall_second_judge": 1.0,
+    "failures_second_judge": []
+  },
+  {
+    "label": "A1-wrong-model-value",
+    "kind": "broken",
+    "injected_fault": "veo-2.0 model rejects generate_audio=true",
+    "expected_taxonomy": "argument_value",
+    "tc_overall": 1.0,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 1.0
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 1.0,
+      "type_compliance": 1.0,
+      "format_compliance": 1.0,
+      "relevancy": 1.0
+    },
+    "failures": [],
+    "rationale": "The agent correctly identified the need to generate a video from a text prompt and used the appropriate tool with all parameters accurately extracted from the user's request.",
+    "tc_overall_second_judge": 0.839,
+    "failures_second_judge": [
+      "argument_value"
+    ]
+  },
+  {
+    "label": "A2-illegal-enum",
+    "kind": "broken",
+    "injected_fault": "aspect_ratio 21:9 not supported",
+    "expected_taxonomy": "argument_format",
+    "tc_overall": 0.956,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 0.867
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.2,
+      "type_compliance": 1.0,
+      "format_compliance": 1.0,
+      "relevancy": 1.0
+    },
+    "failures": [
+      "argument_value"
+    ],
+    "rationale": "The agent correctly identified the need for a video generation tool and provided most parameters accurately. However, the 'aspect_ratio' parameter value '21:9' does not match the user's explicit request for '16:9'.",
+    "tc_overall_second_judge": 0.867,
+    "failures_second_judge": [
+      "argument_value",
+      "argument_format"
+    ]
+  },
+  {
+    "label": "A3-hallucinated-model",
+    "kind": "broken",
+    "injected_fault": "model ID does not exist in spec",
+    "expected_taxonomy": "argument_value",
+    "tc_overall": 0.822,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 0.467
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.2,
+      "type_compliance": 0.2,
+      "format_compliance": 0.2,
+      "relevancy": 0.2
+    },
+    "failures": [
+      "argument_value"
+    ],
+    "rationale": "The agent correctly identified the `veo_t2v` tool and provided all necessary parameters. However, the value provided for the `model` parameter, 'veo-3.5-ultra-generate-001', is not listed as a supported model in the tool's specification, leading to a value accuracy error and cascading penalties.",
+    "tc_overall_second_judge": 0.822,
+    "failures_second_judge": [
+      "argument_value"
+    ]
+  },
+  {
+    "label": "A4-missing-required",
+    "kind": "broken",
+    "injected_fault": "missing required 'prompt'",
+    "expected_taxonomy": "argument_completeness",
+    "tc_overall": 0.722,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 0.833,
+      "arguments": 0.333
+    },
+    "arg_subscores": {
+      "completeness": 0.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.0,
+      "type_compliance": 0.0,
+      "format_compliance": 0.0,
+      "relevancy": 1.0
+    },
+    "failures": [
+      "argument_completeness"
+    ],
+    "rationale": "The agent failed to include the required 'prompt' parameter in the 'veo_t2v' tool call, which is essential for generating a video from a text description. This missing required parameter leads to cascading penalties for value accuracy, type compliance, and format compliance.",
+    "tc_overall_second_judge": 0.778,
+    "failures_second_judge": [
+      "argument_completeness"
+    ]
+  },
+  {
+    "label": "A5-wrong-tool",
+    "kind": "broken",
+    "injected_fault": "used i2v with no source image (should be t2v)",
+    "expected_taxonomy": "selection",
+    "tc_overall": 0.444,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 0.0,
+      "arguments": 0.333
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.0,
+      "type_compliance": 0.0,
+      "format_compliance": 0.0,
+      "relevancy": 0.0
+    },
+    "failures": [
+      "selection",
+      "argument_value"
+    ],
+    "rationale": "The agent incorrectly selected the `veo_i2v` tool, which requires an image, instead of the `veo_t2v` tool for a text-based video generation request. As a result, it provided an ungrounded and incorrect value for the required `image_uri` parameter.",
+    "tc_overall_second_judge": 0.494,
+    "failures_second_judge": [
+      "selection",
+      "argument_value"
+    ]
+  },
+  {
+    "label": "A6-wrong-param-names",
+    "kind": "broken",
+    "injected_fault": "invalid parameter names ratio/gcs_bucket",
+    "expected_taxonomy": "argument_name",
+    "tc_overall": 0.667,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 0.0
+    },
+    "arg_subscores": {
+      "completeness": 0.0,
+      "name_accuracy": 0.0,
+      "value_accuracy": 0.0,
+      "type_compliance": 0.0,
+      "format_compliance": 0.0,
+      "relevancy": 0.0
+    },
+    "failures": [
+      "argument_name",
+      "argument_completeness",
+      "argument_value",
+      "argument_type",
+      "argument_format",
+      "argument_relevancy"
+    ],
+    "rationale": "The agent used incorrect parameter names for 'aspect_ratio' (used 'ratio') and 'bucket' (used 'gcs_bucket'), which are not defined in the tool's schema. This results in missing required parameters and the inclusion of invalid parameters, leading to cascading penalties across argument sub-dimensions.",
+    "tc_overall_second_judge": 0.794,
+    "failures_second_judge": [
+      "argument_name"
+    ]
+  },
+  {
+    "label": "B0-correct",
+    "kind": "correct",
+    "injected_fault": "none",
+    "expected_taxonomy": "none",
+    "tc_overall": 1.0,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 1.0
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 1.0,
+      "type_compliance": 1.0,
+      "format_compliance": 1.0,
+      "relevancy": 1.0
+    },
+    "failures": [],
+    "rationale": "The agent correctly identified the `veo_i2v` tool to animate an image into a video. All necessary parameters were provided with correct values and types, and no unnecessary parameters were included.",
+    "tc_overall_second_judge": 1.0,
+    "failures_second_judge": []
+  },
+  {
+    "label": "B1-wrong-tool",
+    "kind": "broken",
+    "injected_fault": "used t2v, ignoring the provided image (should be i2v)",
+    "expected_taxonomy": "selection",
+    "tc_overall": 0.656,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 0.0,
+      "arguments": 0.967
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.8,
+      "type_compliance": 1.0,
+      "format_compliance": 1.0,
+      "relevancy": 1.0
+    },
+    "failures": [
+      "selection"
+    ],
+    "rationale": "The agent incorrectly selected the `veo_t2v` tool, which generates video from a text prompt, instead of `veo_i2v`, which generates video from an input image. The user explicitly provided an image URI to be animated, which `veo_t2v` cannot process.",
+    "tc_overall_second_judge": 0.5,
+    "failures_second_judge": [
+      "selection",
+      "argument_value"
+    ]
+  },
+  {
+    "label": "B2-missing-required-image",
+    "kind": "broken",
+    "injected_fault": "missing required image_uri",
+    "expected_taxonomy": "argument_completeness",
+    "tc_overall": 0.778,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 0.333
+    },
+    "arg_subscores": {
+      "completeness": 0.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.0,
+      "type_compliance": 0.0,
+      "format_compliance": 0.0,
+      "relevancy": 1.0
+    },
+    "failures": [
+      "argument_completeness",
+      "argument_value",
+      "argument_type",
+      "argument_format"
+    ],
+    "rationale": "The agent failed to include the required 'image_uri' parameter, which was explicitly provided in the user's request. This critical omission makes the tool call invalid.",
+    "tc_overall_second_judge": 0.794,
+    "failures_second_judge": [
+      "argument_completeness"
+    ]
+  },
+  {
+    "label": "B3-malformed-uri",
+    "kind": "broken",
+    "injected_fault": "image_uri not a gs:// URI",
+    "expected_taxonomy": "argument_format",
+    "tc_overall": 0.867,
+    "dimensions": {
+      "usage": 1.0,
+      "selection": 1.0,
+      "arguments": 0.6
+    },
+    "arg_subscores": {
+      "completeness": 1.0,
+      "name_accuracy": 1.0,
+      "value_accuracy": 0.2,
+      "type_compliance": 0.2,
+      "format_compliance": 0.2,
+      "relevancy": 1.0
+    },
+    "failures": [
+      "argument_value",
+      "argument_type",
+      "argument_format"
+    ],
+    "rationale": "The agent correctly selected the `veo_i2v` tool. However, it failed to extract the full GCS URI for the `image_uri` parameter, providing only the filename 'in.png' instead of the complete 'gs://mybucket/in.png' as specified in the user's request.",
+    "tc_overall_second_judge": 0.911,
+    "failures_second_judge": [
+      "argument_value",
+      "argument_format"
+    ]
+  }
+]

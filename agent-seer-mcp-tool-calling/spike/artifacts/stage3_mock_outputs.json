@@ -1,0 +1,794 @@
+[
+  {
+    "scenario_title": "Create a short promotional video for a new product launch",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-assets/product_images/aura_lamp_hero.png",
+          "prompt": "A sleek, modern smart lamp named 'Aura' emitting a warm, ambient glow. Show the lamp from multiple angles.",
+          "aspect_ratio": "16:9",
+          "duration": 10,
+          "output_filename": "aura_lamp_promo"
+        },
+        "quick_explanation": "This call uses the input image of the product and a descriptive prompt to generate a promotional video showcasing the smart lamp's features.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-generate-001. This took about 1m58s. Videos saved to GCS: gs://my-company-assets/generated_videos/aura_lamp_promo.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/generated_videos/aura_lamp_promo.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-assets/generated_videos/aura_lamp_promo.mp4",
+          "duration_seconds": 10,
+          "description": "Promotional video for the 'Aura' smart lamp, highlighting its design and ambient lighting."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Extend an existing product demo video",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_extend_video",
+        "parameters": {
+          "video_uri": "gs://my-company-assets/videos/quantum_software_demo.mp4",
+          "prompt": "Add a subtle animation of the 'Quantum' logo fading in at the end.",
+          "output_filename": "quantum_software_demo_extended"
+        },
+        "quick_explanation": "This call extends an existing video by 7 seconds, adding a specific visual element (company logo) to the end as guided by the prompt.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Video extended successfully. Added 7 seconds with a fading 'Quantum' logo animation at the end. The new video is saved as gs://my-company-assets/videos/quantum_software_demo_extended.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/quantum_software_demo_extended.mp4",
+              "mimeType": "video/mp4",
+              "description": "Extended Quantum software demo video"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "original_video": "gs://my-company-assets/videos/quantum_software_demo.mp4",
+          "extended_video_uri": "gs://my-company-assets/videos/quantum_software_demo_extended.mp4",
+          "extension_duration_seconds": 7,
+          "added_element": "Fading Quantum company logo animation at the end"
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Create a social media teaser from two images",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_first_last_to_video",
+        "parameters": {
+          "first_image_uri": "gs://my-company-assets/images/messy_desk.jpg",
+          "last_image_uri": "gs://my-company-assets/images/organized_desk.jpg",
+          "prompt": "Show a transformation from a cluttered desk to a perfectly organized desk, highlighting the ZenDesk organizer.",
+          "duration": 5,
+          "aspect_ratio": "1:1",
+          "output_filename": "zendesk_transformation_teaser"
+        },
+        "quick_explanation": "This call generates a video that transitions between two provided images, effectively showing a before-and-after scenario for a product.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully generated video 'zendesk_transformation_teaser.mp4'. Duration: 5s. Aspect Ratio: 1:1. Model: veo-fast-generate-001."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/zendesk_transformation_teaser.mp4",
+              "mimeType": "video/mp4",
+              "description": "Generated video showing desk transformation."
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-assets/videos/zendesk_transformation_teaser.mp4",
+          "message": "A video showcasing the transformation from a messy desk to an organized one using the ZenDesk organizer has been created and is available at gs://my-company-assets/videos/zendesk_transformation_teaser.mp4."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Generate a video concept from multiple reference images and a prompt",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_ingredients_to_video",
+        "parameters": {
+          "prompt": "Vibrant, healthy smoothies made easy with EcoBlend.",
+          "reference_image_uris": [
+            "gs://my-company-assets/images/fruits/berries.png",
+            "gs://my-company-assets/images/fruits/banana.png",
+            "gs://my-company-assets/images/products/ecoblend_maker.png"
+          ],
+          "duration": 15,
+          "aspect_ratio": "16:9",
+          "output_filename": "ecoblend_concept_v1"
+        },
+        "quick_explanation": "This call uses multiple reference images (fruits and product) along with a text prompt to generate a conceptual video for a marketing campaign.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m20s. Videos saved to GCS: gs://my-company-assets/videos/ecoblend_concept_v1_16x9.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/ecoblend_concept_v1_16x9.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-assets/videos/ecoblend_concept_v1_16x9.mp4",
+          "duration_seconds": 15,
+          "aspect_ratio": "16:9",
+          "description": "A vibrant and energetic video showcasing fresh berries and bananas being blended into a healthy smoothie using the EcoBlend maker, emphasizing ease of use and healthy lifestyle."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Create a general explainer video from a text description",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_t2v",
+        "parameters": {
+          "prompt": "Professional explainer video highlighting the security, accessibility, and ease of use of 'SecureVault' cloud storage.",
+          "aspect_ratio": "16:9",
+          "duration": 20,
+          "generate_audio": true,
+          "output_filename": "securevault_explainer"
+        },
+        "quick_explanation": "This call generates a video entirely from a text prompt, suitable for explaining a service or concept without pre-existing visual assets.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully generated 1 video using model veo-video-generator-v2. Processing took 1 minute and 45 seconds. Video saved to GCS: gs://securevault-videos/explainer/securevault_explainer_20231027T103000Z.mp4"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://securevault-videos/explainer/securevault_explainer_20231027T103000Z.mp4",
+              "mimeType": "video/mp4",
+              "description": "SecureVault Explainer Video"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_url": "gs://securevault-videos/explainer/securevault_explainer_20231027T103000Z.mp4",
+          "video_description": "A professional explainer video was generated, detailing the security features, accessibility options, and user-friendly interface of the SecureVault cloud storage solution. The video is in 16:9 aspect ratio and has a duration of 20 seconds with accompanying audio."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Generate variations of a marketing video using reference images",
+    "tier": "simple",
+    "mock": [
+      {
+        "function_name": "veo_reference_to_video",
+        "parameters": {
+          "prompt": "Experience the rich aroma and bold taste of Artisan Coffee.",
+          "reference_image_uris": [
+            "gs://my-company-assets/images/artisan_coffee_beans.jpg",
+            "gs://my-company-assets/images/artisan_coffee_packaging.png"
+          ],
+          "duration": 15,
+          "num_videos": 1,
+          "output_filename": "artisan_coffee_promo_15s"
+        },
+        "quick_explanation": "Generates the first variation of the marketing video with a specified duration (15 seconds) using reference images and a prompt.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m15s. Videos saved to GCS: gs://my-company-assets/videos/artisan_coffee_promo_15s.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/artisan_coffee_promo_15s.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "message": "Successfully created a 15-second marketing video for Artisan Coffee. You can find it at gs://my-company-assets/videos/artisan_coffee_promo_15s.mp4."
+        }
+      },
+      {
+        "function_name": "veo_reference_to_video",
+        "parameters": {
+          "prompt": "Experience the rich aroma and bold taste of Artisan Coffee.",
+          "reference_image_uris": [
+            "gs://my-company-assets/images/artisan_coffee_beans.jpg",
+            "gs://my-company-assets/images/artisan_coffee_packaging.png"
+          ],
+          "duration": 30,
+          "num_videos": 1,
+          "output_filename": "artisan_coffee_promo_30s"
+        },
+        "quick_explanation": "Generates the second variation of the marketing video with a different specified duration (30 seconds) using the same reference images and prompt.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 2m30s. Videos saved to GCS: gs://my-company-assets/videos/artisan_coffee_promo_30s.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/artisan_coffee_promo_30s.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "message": "Successfully created a 30-second marketing video for Artisan Coffee. You can find it at gs://my-company-assets/videos/artisan_coffee_promo_30s.mp4."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Dynamic Product Showcase from Static Assets",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_ingredients_to_video",
+        "parameters": {
+          "prompt": "A dynamic 15-second promotional video showcasing a sleek smartwatch on a person's wrist during a workout, highlighting its fitness tracking features. Modern, energetic feel.",
+          "reference_image_uris": [
+            "gs://my-company-assets/lifestyle_watch_wearer.jpg",
+            "gs://my-company-assets/product_watch_closeup.png"
+          ],
+          "duration": 15,
+          "aspect_ratio": "16:9",
+          "generate_audio": true,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "smartwatch_promo_v1"
+        },
+        "quick_explanation": "This call uses reference images and a prompt to generate a promotional video. It specifies duration, aspect ratio, and audio generation for a polished output.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m20s. Videos saved to GCS: gs://my-company-assets/generated_videos/smartwatch_promo_v1.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/generated_videos/smartwatch_promo_v1.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-assets/generated_videos/smartwatch_promo_v1.mp4",
+          "duration_seconds": 15,
+          "aspect_ratio": "16:9",
+          "audio_generated": true,
+          "model_used": "veo-3.1-fast-generate-001",
+          "processing_time_seconds": 80
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Animated Explainer for Technical Concept",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-assets/data_flow_diagram.png",
+          "prompt": "An animated explainer showing data flowing from a central cloud icon to multiple connected devices (laptop, tablet, phone), illustrating seamless synchronization.",
+          "duration": 10,
+          "aspect_ratio": "16:9",
+          "generate_audio": true,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "cloud_sync_explainer_v1"
+        },
+        "quick_explanation": "This call generates a video from a single static image (diagram) and a prompt, creating an animated explainer with audio.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 55s. Videos saved to GCS: gs://my-company-videos/explainer_videos/cloud_sync_explainer_v1.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-videos/explainer_videos/cloud_sync_explainer_v1.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-videos/explainer_videos/cloud_sync_explainer_v1.mp4",
+          "duration_seconds": 10,
+          "model_used": "veo-3.1-fast-generate-001",
+          "narration_included": true,
+          "status": "success"
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Before & After Product Transformation Video",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_first_last_to_video",
+        "parameters": {
+          "first_image_uri": "gs://my-company-assets/raw_material.jpg",
+          "last_image_uri": "gs://my-company-assets/finished_product.png",
+          "duration": 8,
+          "prompt": "A visual transformation from raw material to a high-quality finished product, emphasizing innovation and craftsmanship.",
+          "generate_audio": true,
+          "aspect_ratio": "1:1",
+          "output_filename": "product_transformation_v1"
+        },
+        "quick_explanation": "This call generates a video by interpolating between a start and end image, ideal for showcasing transformations or progress.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully generated video 'product_transformation_v1.mp4' in 1m15s. Video saved to GCS: gs://my-company-assets/videos/product_transformation_v1.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/videos/product_transformation_v1.mp4",
+              "mimeType": "video/mp4",
+              "description": "Generated video of product transformation"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-assets/videos/product_transformation_v1.mp4",
+          "duration_seconds": 8,
+          "description": "A short, 8-second video showcasing the transformation from raw material to finished product, with subtle background music, emphasizing innovation and quality craftsmanship."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Social Media Ad Campaign - Video Extension",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_extend_video",
+        "parameters": {
+          "video_uri": "gs://my-company-campaigns/short_ad_v1.mp4",
+          "prompt": "Extend this fast-paced ad with a dynamic visual effect, reinforcing the call to action and maintaining energy.",
+          "generate_audio": true,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "short_ad_v1_extended"
+        },
+        "quick_explanation": "This call extends an existing video clip, adding new content guided by a prompt to meet a longer duration requirement while maintaining style and audio.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m45s. Videos saved to GCS: gs://my-company-campaigns/generated_videos/short_ad_v1_extended_20240315T103000.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-campaigns/generated_videos/short_ad_v1_extended_20240315T103000.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-campaigns/generated_videos/short_ad_v1_extended_20240315T103000.mp4",
+          "duration_seconds": 15,
+          "status": "successfully extended",
+          "original_video": "gs://my-company-campaigns/short_ad_v1.mp4",
+          "prompt_used": "Extend this fast-paced ad with a dynamic visual effect, reinforcing the call to action and maintaining energy."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Automated Brand Mascot Animation",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-brand/sparky_mascot.png",
+          "prompt": "A friendly cartoon mascot waving hello and winking, looping animation.",
+          "duration": 5,
+          "aspect_ratio": "1:1",
+          "generate_audio": false,
+          "model": "veo-3.1-fast-generate-001",
+          "person_generation": "dont_allow",
+          "output_filename": "sparky_mascot_wave_loop"
+        },
+        "quick_explanation": "Generates a simple animated loop from a mascot image, setting duration, aspect ratio, and disabling audio for seamless looping.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m15s. Videos saved to GCS: gs://my-company-brand/animations/sparky_mascot_wave_loop.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-brand/animations/sparky_mascot_wave_loop.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "animation_url": "gs://my-company-brand/animations/sparky_mascot_wave_loop.mp4",
+          "status": "success",
+          "message": "Animation 'sparky_mascot_wave_loop.mp4' generated successfully and is available at the provided GCS link."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Personalized Video Messages for VIP Clients",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_first_last_to_video",
+        "parameters": {
+          "first_image_uri": "gs://my-company-assets/professional_background.jpg",
+          "last_image_uri": "gs://my-company-brand/logo.png",
+          "duration": 10,
+          "prompt": "A personalized welcome video for Ms. Anya Sharma, featuring our logo and a professional background, emphasizing premium service.",
+          "generate_audio": true,
+          "output_filename": "vip_welcome_anya_sharma"
+        },
+        "quick_explanation": "Creates a personalized video by using a background image and a logo as start and end points, incorporating a personalized prompt for the message.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 0m55s. Videos saved to GCS: gs://my-company-media/vip_welcome_anya_sharma.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-media/vip_welcome_anya_sharma.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "message": "A personalized welcome video for Ms. Anya Sharma has been generated and is available at gs://my-company-media/vip_welcome_anya_sharma.mp4. It features our logo, a professional background, and a warm voiceover emphasizing our commitment to premium service."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Product Feature Highlight Reel",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_reference_to_video",
+        "parameters": {
+          "reference_image_uris": [
+            "gs://my-company-products/smartphone_main.png",
+            "gs://my-company-products/feature_camera.jpg",
+            "gs://my-company-products/feature_battery.jpg",
+            "gs://my-company-products/feature_screen.jpg"
+          ],
+          "prompt": "A 20-second video reel highlighting a smartphone's key features: camera, battery life, and screen quality. Smooth transitions and upbeat, tech-focused music.",
+          "duration": 20,
+          "aspect_ratio": "16:9",
+          "generate_audio": true,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "smartphone_feature_reel"
+        },
+        "quick_explanation": "Generates a video reel using multiple reference images and a prompt, combining them into a cohesive showcase of product features with audio.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-fast-generate-001. This took about 1m15s. Videos saved to GCS: gs://my-company-products/generated_videos/smartphone_feature_reel.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-products/generated_videos/smartphone_feature_reel.mp4",
+              "mimeType": "video/mp4",
+              "description": "Smartphone feature reel video"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "video_uri": "gs://my-company-products/generated_videos/smartphone_feature_reel.mp4",
+          "duration_seconds": 20,
+          "status": "success",
+          "message": "Video reel generated successfully and saved to gs://my-company-products/generated_videos/smartphone_feature_reel.mp4."
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Rapid Prototyping of Marketing Concepts",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-assets/placeholder_drink.png",
+          "prompt": "A dynamic 5-second video concept for an energy drink, themed around extreme sports (e.g., skateboarding, snowboarding). High energy.",
+          "duration": 5,
+          "aspect_ratio": "16:9",
+          "num_videos": 1,
+          "output_filename": "energy_drink_concept_extreme"
+        },
+        "quick_explanation": "Generates the first video concept using a placeholder image and a theme-specific prompt.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-generate-001. This took about 1m45s. Videos saved to GCS: gs://my-company-assets/video_concepts/energy_drink_concept_extreme.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/video_concepts/energy_drink_concept_extreme.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "medium",
+        "expected_response": {
+          "video_concepts": [
+            {
+              "theme": "Extreme Sports",
+              "filename": "energy_drink_concept_extreme.mp4",
+              "gcs_path": "gs://my-company-assets/video_concepts/energy_drink_concept_extreme.mp4",
+              "duration_seconds": 5
+            }
+          ]
+        }
+      },
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-assets/placeholder_drink.png",
+          "prompt": "A vibrant 5-second video concept for an energy drink, themed around a healthy lifestyle (e.g., yoga, running). Fresh and natural.",
+          "duration": 5,
+          "aspect_ratio": "16:9",
+          "num_videos": 1,
+          "output_filename": "energy_drink_concept_healthy"
+        },
+        "quick_explanation": "Generates the second video concept with a different theme.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-generate-001. This took about 1m50s. Videos saved to GCS: gs://my-company-assets/video_concepts/energy_drink_concept_healthy.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/video_concepts/energy_drink_concept_healthy.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "medium",
+        "expected_response": {
+          "video_concepts": [
+            {
+              "theme": "Healthy Lifestyle",
+              "filename": "energy_drink_concept_healthy.mp4",
+              "gcs_path": "gs://my-company-assets/video_concepts/energy_drink_concept_healthy.mp4",
+              "duration_seconds": 5
+            }
+          ]
+        }
+      },
+      {
+        "function_name": "veo_i2v",
+        "parameters": {
+          "image_uri": "gs://my-company-assets/placeholder_drink.png",
+          "prompt": "An exciting 5-second video concept for an energy drink, themed around a party scene (e.g., dancing, nightlife). Energetic and social.",
+          "duration": 5,
+          "aspect_ratio": "16:9",
+          "num_videos": 1,
+          "output_filename": "energy_drink_concept_party"
+        },
+        "quick_explanation": "Generates the third video concept with a third distinct theme.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 1 video(s) using model veo-3.1-generate-001. This took about 1m55s. Videos saved to GCS: gs://my-company-assets/video_concepts/energy_drink_concept_party.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://my-company-assets/video_concepts/energy_drink_concept_party.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 1"
+            }
+          ]
+        },
+        "confidence": "medium",
+        "expected_response": {
+          "video_concepts": [
+            {
+              "theme": "Party Scene",
+              "filename": "energy_drink_concept_party.mp4",
+              "gcs_path": "gs://my-company-assets/video_concepts/energy_drink_concept_party.mp4",
+              "duration_seconds": 5
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "scenario_title": "Generating Synthetic Data for Training",
+    "tier": "complex",
+    "mock": [
+      {
+        "function_name": "veo_t2v",
+        "parameters": {
+          "prompt": "A standard brown shipping box being opened, with a neutral background and soft lighting. Duration 3 seconds.",
+          "num_videos": 5,
+          "duration": 3,
+          "aspect_ratio": "16:9",
+          "generate_audio": false,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "shipping_box_open_data_batch1"
+        },
+        "quick_explanation": "Generates the first batch of synthetic data videos, specifying prompt, number of videos, duration, and aspect ratio, disabling audio for data focus.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 5 video(s) using model veo-3.1-fast-generate-001. This took about 5m10s. Videos saved to GCS: gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_001.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_002.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_003.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_004.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_005.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_001.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_002.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 2 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_003.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 3 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_004.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 4 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_005.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 5 of 5"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "status": "success",
+          "message": "Successfully generated 5 videos for batch 1, saved to gs://synthetic-data-bucket/shipping_box_open_data_batch1/",
+          "video_urls": [
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_001.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_002.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_003.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_004.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch1/vid_005.mp4"
+          ]
+        }
+      },
+      {
+        "function_name": "veo_t2v",
+        "parameters": {
+          "prompt": "A standard brown shipping box being opened, with a slightly darker background and dramatic lighting. Duration 3 seconds.",
+          "num_videos": 5,
+          "duration": 3,
+          "aspect_ratio": "16:9",
+          "generate_audio": false,
+          "model": "veo-3.1-fast-generate-001",
+          "output_filename": "shipping_box_open_data_batch2"
+        },
+        "quick_explanation": "Generates the second batch of synthetic data videos, varying the lighting and background conditions as requested.",
+        "mock_output": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Generated 5 video(s) using model veo-3.1-fast-generate-001. This took about 5m05s. Videos saved to GCS: gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_006.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_007.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_008.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_009.mp4, gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_010.mp4."
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_006.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 1 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_007.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 2 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_008.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 3 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_009.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 4 of 5"
+            },
+            {
+              "type": "resource_link",
+              "uri": "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_010.mp4",
+              "mimeType": "video/mp4",
+              "description": "veo output 5 of 5"
+            }
+          ]
+        },
+        "confidence": "high",
+        "expected_response": {
+          "status": "success",
+          "message": "Successfully generated 5 videos for batch 2, saved to gs://synthetic-data-bucket/shipping_box_open_data_batch2/",
+          "video_urls": [
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_006.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_007.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_008.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_009.mp4",
+            "gs://synthetic-data-bucket/shipping_box_open_data_batch2/vid_010.mp4"
+          ]
+        }
+      }
+    ]
+  }
+]

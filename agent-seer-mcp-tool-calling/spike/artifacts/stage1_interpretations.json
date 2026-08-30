@@ -1,0 +1,94 @@
+[
+  {
+    "tool_name": "veo_extend_video",
+    "what_it_does": "This tool extends an existing video. It takes an input MP4 video (1-30 seconds, 24fps, 720p/1080p/4k, 16:9 or 9:16 aspect ratio) and generates a 7-second extension. The output video is saved to Google Cloud Storage (GCS) and can optionally be downloaded locally. The extension can be guided by a text prompt.",
+    "what_it_needs": "The tool requires a `video_uri` which is the GCS URI of the input video. Other optional parameters include: `aspect_ratio` for the output video, `bucket` for GCS storage if not using the environment variable, `generate_audio` (defaults to true, only supported by Veo 3 models), `mime_type` (defaults to 'video/mp4'), `model` to specify the video generation model (defaults to 'veo-3.1-fast-generate-001'), `num_videos` to generate multiple outputs (model-dependent maximum), `output_directory` for local downloads, `output_filename` for custom naming, `person_generation` to control if people can be generated ('allow_adult' or 'dont_allow'), `prompt` for text-guided extension, and `seed` for reproducible results.",
+    "why_its_used": "An agent would use this tool to create longer video content from existing short clips. This is useful for generating more engaging marketing materials, social media content, or for creating variations of existing video assets. The ability to use a text prompt allows for creative control over the extended content, and the option to generate audio makes the output more complete.",
+    "enterprise_context": [
+      "Content Creation",
+      "Marketing",
+      "Social Media Management",
+      "Video Production",
+      "Asset Generation",
+      "AI-powered Media"
+    ]
+  },
+  {
+    "tool_name": "veo_first_last_to_video",
+    "what_it_does": "This tool generates a video using two input images: a first frame and a last frame. The generated video is saved to Google Cloud Storage (GCS) and can optionally be downloaded locally. It supports JPEG and PNG image formats. The tool allows for customization of video aspects such as duration, aspect ratio, and whether to generate audio. It also offers control over the generation model, number of videos, and person generation settings. For reproducible results, a seed can be provided.",
+    "what_it_needs": "The tool requires the GCS URIs for both the `first_image_uri` and `last_image_uri`. Optional parameters include `aspect_ratio`, `bucket` (for GCS storage), `duration` (in seconds), `first_mime_type`, `last_mime_type`, `generate_audio` (defaults to true), `model` (defaults to 'veo-3.1-fast-generate-001'), `num_videos` (defaults to 1), `output_directory` (for local download), `output_filename` (for custom naming), `person_generation` (defaults to 'allow_adult'), `prompt` (text guidance), and `seed` (for reproducibility). If `bucket` is not provided, the `GENMEDIA_BUCKET` environment variable must be set.",
+    "why_its_used": "This tool is useful for creating short video clips that transition between two distinct visual states. It can be used to generate marketing content, product demonstrations showing a before-and-after state, animated explanations, or personalized video messages. The ability to specify a prompt allows for creative control over the video's content and style, while the option to generate audio adds to its utility for richer media experiences. In an enterprise context, it's valuable for automating the creation of visual assets for campaigns or internal communications.",
+    "enterprise_context": [
+      "Marketing",
+      "Content Creation",
+      "Media Production",
+      "Automation",
+      "Personalization",
+      "Visual Asset Generation",
+      "Cloud Storage Integration"
+    ]
+  },
+  {
+    "tool_name": "veo_i2v",
+    "what_it_does": "This tool generates videos from a static input image, optionally guided by a text prompt. The generated video is stored in Google Cloud Storage (GCS) and can also be downloaded locally. It supports various video generation models with different capabilities regarding duration, aspect ratios, and the number of videos that can be generated simultaneously. The tool can also generate audio for the videos and control whether people are allowed in the generated content.",
+    "what_it_needs": "The tool requires the `image_uri` of the input image hosted in GCS (e.g., 'gs://your-bucket/input-image.png'). Optionally, it can take a text `prompt` to influence the video's content. Users can specify the `aspect_ratio` (e.g., '16:9', '9:16'), `duration` in seconds, and the `model` to use for generation, with 'veo-3.1-fast-generate-001' being the default. The destination for the generated video can be specified using `bucket` (GCS path) or `output_directory` (local path). Other optional parameters include `mime_type` of the input image, `num_videos` to generate, `output_filename` for custom naming, `person_generation` settings, and a `seed` for reproducibility.",
+    "why_its_used": "This tool is useful for creating dynamic video content from existing static assets. Potential use cases include generating marketing or social media video snippets from product images, creating animated explainers from diagrams or illustrations, prototyping video concepts, or quickly producing visual assets for presentations and internal communications. The ability to guide generation with prompts allows for creative control over the video's narrative or style.",
+    "enterprise_context": [
+      "Marketing",
+      "Content Creation",
+      "Social Media",
+      "Advertising",
+      "Product Visualization",
+      "Internal Communications",
+      "Prototyping",
+      "Digital Asset Management",
+      "Creative Services"
+    ]
+  },
+  {
+    "tool_name": "veo_ingredients_to_video",
+    "what_it_does": "This tool generates videos using a combination of reference images (up to 3) and a text prompt. The generated video is stored in Google Cloud Storage (GCS) and can optionally be downloaded locally. It supports common image formats like JPEG and PNG.",
+    "what_it_needs": "The tool requires a text prompt to guide video generation, especially when reference images are used. It also needs one or more reference image URIs (up to 3) stored in GCS.  Optional parameters include: `aspect_ratio`, `bucket` (for GCS storage), `duration`, `generate_audio` (defaults to true for Veo 3 models), `model` (with various Veo versions available), `num_videos` (defaults to 1), `output_directory` (for local download), `output_filename` (for custom naming), `person_generation` (defaults to 'allow_adult'), and `seed` (for reproducibility).",
+    "why_its_used": "An agent would use this tool to create custom video content for various purposes. This could include generating marketing or promotional videos based on product images and descriptions, creating training or educational materials with visual aids, producing synthetic data for model training, or quickly prototyping video concepts. The ability to specify reference images allows for greater control over the visual style and content of the generated videos.",
+    "enterprise_context": [
+      "Content Creation",
+      "Marketing",
+      "Training",
+      "Product Development",
+      "Data Augmentation",
+      "Creative Prototyping",
+      "Multimedia Production"
+    ]
+  },
+  {
+    "tool_name": "veo_reference_to_video",
+    "what_it_does": "This tool generates videos based on provided reference images (up to 3) and a text prompt. The generated video is stored in Google Cloud Storage (GCS) and can optionally be downloaded locally. It supports JPEG and PNG image formats. The tool offers flexibility in choosing different Veo models, controlling video duration, aspect ratio, and whether to generate audio.",
+    "what_it_needs": "The tool requires the following parameters:\n- `prompt`: A text description to guide the video generation. This is mandatory if `reference_image_uris` are provided.\n- `reference_image_uris`: An array containing GCS URIs for up to 3 reference images. Supported formats are JPEG and PNG.\n- `bucket`: The GCS bucket where the generated video will be saved. If not specified, the `GENMEDIA_BUCKET` environment variable will be used. One of these is required.\nOptional parameters include:\n- `model`: Specifies the Veo model to use for generation. Defaults to 'veo-3.1-fast-generate-001'. Different models have varying supported durations, maximum number of videos, and aspect ratios.\n- `aspect_ratio`: Desired aspect ratio for the video (e.g., '16:9'). Supported ratios are model-dependent.\n- `duration`: The duration of the video in seconds. Supported ranges are model-dependent.\n- `generate_audio`: A boolean to indicate whether to generate audio. Defaults to `true` and is only supported by Veo 3 models.\n- `num_videos`: The number of videos to generate. Defaults to 1, with a model-dependent maximum.\n- `output_directory`: A local directory path to download the generated videos.\n- `output_filename`: A base name for the output file(s). The extension will be automatically added.\n- `person_generation`: Controls whether to allow generation of videos with people. Options are 'dont_allow' or 'allow_adult'. Defaults to 'allow_adult'.\n- `seed`: An optional non-negative integer for reproducible video generation.",
+    "why_its_used": "An agent would use this tool to quickly generate video content for various purposes, such as:\n- Creating marketing or promotional videos from existing brand assets or product images.\n- Generating visual content for social media campaigns.\n- Prototyping video concepts or storyboards.\n- Producing visual aids for training or educational materials.\n- Automating the creation of video assets based on design specifications.",
+    "enterprise_context": [
+      "Content Creation",
+      "Marketing",
+      "Brand Management",
+      "Digital Asset Management",
+      "Automation",
+      "Generative AI",
+      "Video Production",
+      "Cloud Storage Integration"
+    ]
+  },
+  {
+    "tool_name": "veo_t2v",
+    "what_it_does": "This tool generates videos from text prompts using the Veo model. The generated videos are saved to Google Cloud Storage (GCS) and can optionally be downloaded locally. It supports various Veo models with different capabilities regarding duration, aspect ratios, and the number of videos that can be generated simultaneously. It also offers options for generating audio, controlling aspect ratio, duration, and the number of videos, as well as specifying output locations and filenames.",
+    "what_it_needs": "The tool requires a 'prompt' (string) which is the text description for the video content. Optional parameters include:\n- 'aspect_ratio' (string): For specifying the video's aspect ratio (model-dependent).\n- 'bucket' (string): A GCS bucket for saving the video. Required if GENMEDIA_BUCKET env var is not set.\n- 'duration' (number): The desired video duration in seconds (model-dependent).\n- 'generate_audio' (boolean): Whether to generate audio (defaults to true, only supported by Veo 3 models).\n- 'model' (string): The specific Veo model to use (defaults to 'veo-3.1-fast-generate-001').\n- 'num_videos' (number): The number of videos to generate (model-dependent, defaults to 1).\n- 'output_directory' (string): A local directory to download the videos to.\n- 'output_filename' (string): A base name for the output file(s).\n- 'person_generation' (string): Controls whether people can be generated ('dont_allow' or 'allow_adult', defaults to 'allow_adult').\n- 'seed' (number): An integer for reproducible video generation.",
+    "why_its_used": "This tool is useful for quickly creating video content from textual descriptions. Potential use cases include:\n- Marketing: Generating promotional videos or social media content.\n- Content Creation: Producing unique video assets for articles, presentations, or websites.\n- Prototyping: Visualizing concepts or ideas rapidly.\n- Training: Creating engaging instructional videos.\n- Personalized Media: Generating tailored video messages.",
+    "enterprise_context": [
+      "Marketing",
+      "Content Creation",
+      "Digital Asset Management",
+      "Product Prototyping",
+      "Internal Communications",
+      "Automation",
+      "Scalability"
+    ]
+  }
+]

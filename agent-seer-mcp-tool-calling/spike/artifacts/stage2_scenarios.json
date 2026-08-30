@@ -1,0 +1,395 @@
+{
+  "simple": {
+    "categories": [
+      {
+        "category": "Marketing & Content Creation",
+        "scenarios": [
+          {
+            "title": "Create a short promotional video for a new product launch",
+            "prompt": "I need a short promotional video for our new 'Aura' smart lamp. The video should highlight its sleek design and ambient lighting features. I have a product image.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-assets/product_images/aura_lamp_hero.png",
+                  "prompt": "A sleek, modern smart lamp named 'Aura' emitting a warm, ambient glow. Show the lamp from multiple angles.",
+                  "aspect_ratio": "16:9",
+                  "duration": 10,
+                  "output_filename": "aura_lamp_promo"
+                },
+                "quick_explanation": "This call uses the input image of the product and a descriptive prompt to generate a promotional video showcasing the smart lamp's features."
+              }
+            ],
+            "novelty_reason": "This scenario demonstrates the ability to create engaging marketing content from a single static image, showcasing product features dynamically.",
+            "agent_followup": "Great! I've generated a draft of the Aura lamp promotional video. Would you like to see a preview or make any adjustments to the prompt or duration?"
+          },
+          {
+            "title": "Extend an existing product demo video",
+            "prompt": "Can you extend our existing demo video for the 'Quantum' software by 7 seconds? I want to add a brief outro with our company logo.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_extend_video",
+                "parameters": {
+                  "video_uri": "gs://my-company-assets/videos/quantum_software_demo.mp4",
+                  "prompt": "Add a subtle animation of the 'Quantum' logo fading in at the end.",
+                  "output_filename": "quantum_software_demo_extended"
+                },
+                "quick_explanation": "This call extends an existing video by 7 seconds, adding a specific visual element (company logo) to the end as guided by the prompt."
+              }
+            ],
+            "novelty_reason": "This scenario highlights the tool's capability to iteratively enhance existing video assets, adding specific content without recreating the entire video.",
+            "agent_followup": "I've extended the Quantum software demo video with the logo outro. Would you like me to upload it to the marketing drive or send you a download link?"
+          },
+          {
+            "title": "Create a social media teaser from two images",
+            "prompt": "Create a short, engaging video for social media that transitions from a 'before' image of a messy workspace to an 'after' image of a clean, organized one, using our new 'ZenDesk' organizer.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_first_last_to_video",
+                "parameters": {
+                  "first_image_uri": "gs://my-company-assets/images/messy_desk.jpg",
+                  "last_image_uri": "gs://my-company-assets/images/organized_desk.jpg",
+                  "prompt": "Show a transformation from a cluttered desk to a perfectly organized desk, highlighting the ZenDesk organizer.",
+                  "duration": 5,
+                  "aspect_ratio": "1:1",
+                  "output_filename": "zendesk_transformation_teaser"
+                },
+                "quick_explanation": "This call generates a video that transitions between two provided images, effectively showing a before-and-after scenario for a product."
+              }
+            ],
+            "novelty_reason": "This scenario demonstrates creating a compelling narrative arc (before/after) from static images, ideal for quick social media engagement.",
+            "agent_followup": "The ZenDesk organizer transformation video is ready. It's formatted for social media. Shall I send it to the social media team or provide a download link?"
+          },
+          {
+            "title": "Generate a video concept from multiple reference images and a prompt",
+            "prompt": "I'm brainstorming a new ad campaign for our 'EcoBlend' smoothie maker. Can you create a video concept using these three images of fresh fruits and the blender, with the prompt 'Vibrant, healthy smoothies made easy with EcoBlend'?",
+            "agent_workflow": [
+              {
+                "function_name": "veo_ingredients_to_video",
+                "parameters": {
+                  "prompt": "Vibrant, healthy smoothies made easy with EcoBlend.",
+                  "reference_image_uris": [
+                    "gs://my-company-assets/images/fruits/berries.png",
+                    "gs://my-company-assets/images/fruits/banana.png",
+                    "gs://my-company-assets/images/products/ecoblend_maker.png"
+                  ],
+                  "duration": 15,
+                  "aspect_ratio": "16:9",
+                  "output_filename": "ecoblend_concept_v1"
+                },
+                "quick_explanation": "This call uses multiple reference images (fruits and product) along with a text prompt to generate a conceptual video for a marketing campaign."
+              }
+            ],
+            "novelty_reason": "This scenario showcases the tool's ability to synthesize multiple visual inputs with text to create a more complex and nuanced video concept.",
+            "agent_followup": "I've generated a video concept for the EcoBlend campaign based on your images and prompt. Would you like to review it, or perhaps iterate with different reference images or a modified prompt?"
+          },
+          {
+            "title": "Create a general explainer video from a text description",
+            "prompt": "Generate a short, professional video explaining the benefits of our new 'SecureVault' cloud storage solution. Focus on security, accessibility, and ease of use.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_t2v",
+                "parameters": {
+                  "prompt": "Professional explainer video highlighting the security, accessibility, and ease of use of 'SecureVault' cloud storage.",
+                  "aspect_ratio": "16:9",
+                  "duration": 20,
+                  "generate_audio": true,
+                  "output_filename": "securevault_explainer"
+                },
+                "quick_explanation": "This call generates a video entirely from a text prompt, suitable for explaining a service or concept without pre-existing visual assets."
+              }
+            ],
+            "novelty_reason": "This scenario demonstrates the core text-to-video capability, allowing for rapid content generation based purely on descriptive text.",
+            "agent_followup": "The 'SecureVault' explainer video has been generated. Would you like to preview it, or perhaps refine the prompt to emphasize specific security features?"
+          },
+          {
+            "title": "Generate variations of a marketing video using reference images",
+            "prompt": "Create two variations of a marketing video for our new 'Artisan Coffee' blend. Use the attached image of the coffee beans and the packaging, with the prompt 'Experience the rich aroma and bold taste of Artisan Coffee'. Ensure one variation is 15 seconds and the other is 30 seconds.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_reference_to_video",
+                "parameters": {
+                  "prompt": "Experience the rich aroma and bold taste of Artisan Coffee.",
+                  "reference_image_uris": [
+                    "gs://my-company-assets/images/artisan_coffee_beans.jpg",
+                    "gs://my-company-assets/images/artisan_coffee_packaging.png"
+                  ],
+                  "duration": 15,
+                  "num_videos": 1,
+                  "output_filename": "artisan_coffee_promo_15s"
+                },
+                "quick_explanation": "Generates the first variation of the marketing video with a specified duration (15 seconds) using reference images and a prompt."
+              },
+              {
+                "function_name": "veo_reference_to_video",
+                "parameters": {
+                  "prompt": "Experience the rich aroma and bold taste of Artisan Coffee.",
+                  "reference_image_uris": [
+                    "gs://my-company-assets/images/artisan_coffee_beans.jpg",
+                    "gs://my-company-assets/images/artisan_coffee_packaging.png"
+                  ],
+                  "duration": 30,
+                  "num_videos": 1,
+                  "output_filename": "artisan_coffee_promo_30s"
+                },
+                "quick_explanation": "Generates the second variation of the marketing video with a different specified duration (30 seconds) using the same reference images and prompt."
+              }
+            ],
+            "novelty_reason": "This scenario showcases the ability to generate multiple video variations (different durations) from the same set of inputs, useful for A/B testing or different platform requirements.",
+            "agent_followup": "I've generated two versions of the Artisan Coffee marketing video, one at 15 seconds and another at 30 seconds. Would you like to compare them or perhaps adjust the prompt for one of them?"
+          }
+        ]
+      }
+    ]
+  },
+  "complex": {
+    "categories": [
+      {
+        "category": "Multi-Modal Content Generation & Enhancement",
+        "scenarios": [
+          {
+            "title": "Dynamic Product Showcase from Static Assets",
+            "prompt": "Create a 15-second promotional video for our new line of smartwatches. Use the attached lifestyle image of someone wearing the watch and a close-up product shot. The video should highlight the watch's sleek design and its fitness tracking capabilities, with a modern, energetic feel. Please generate audio with a subtle tech-inspired background track.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_ingredients_to_video",
+                "parameters": {
+                  "prompt": "A dynamic 15-second promotional video showcasing a sleek smartwatch on a person's wrist during a workout, highlighting its fitness tracking features. Modern, energetic feel.",
+                  "reference_image_uris": [
+                    "gs://my-company-assets/lifestyle_watch_wearer.jpg",
+                    "gs://my-company-assets/product_watch_closeup.png"
+                  ],
+                  "duration": 15,
+                  "aspect_ratio": "16:9",
+                  "generate_audio": true,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "smartwatch_promo_v1"
+                },
+                "quick_explanation": "This call uses reference images and a prompt to generate a promotional video. It specifies duration, aspect ratio, and audio generation for a polished output."
+              }
+            ],
+            "novelty_reason": "This scenario combines multiple static assets (lifestyle and product image) with a detailed prompt to create a coherent video narrative, showcasing a product's features and aesthetic.",
+            "agent_followup": "The video has been generated. Would you like to extend its duration or add specific text overlays?"
+          },
+          {
+            "title": "Animated Explainer for Technical Concept",
+            "prompt": "Generate a 10-second explainer video for our new cloud synchronization service. Start with a simple diagram illustrating data flow (provided) and transition to a visual representation of seamless data access across multiple devices. The tone should be informative and professional. Include clear, concise audio narration.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-assets/data_flow_diagram.png",
+                  "prompt": "An animated explainer showing data flowing from a central cloud icon to multiple connected devices (laptop, tablet, phone), illustrating seamless synchronization.",
+                  "duration": 10,
+                  "aspect_ratio": "16:9",
+                  "generate_audio": true,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "cloud_sync_explainer_v1"
+                },
+                "quick_explanation": "This call generates a video from a single static image (diagram) and a prompt, creating an animated explainer with audio."
+              }
+            ],
+            "novelty_reason": "Leverages a static diagram as the starting point for an animated video, effectively transforming a technical illustration into an engaging visual explanation.",
+            "agent_followup": "The explainer video is ready. Would you like to generate variations with different visual styles or perhaps extend it to include a user testimonial?"
+          },
+          {
+            "title": "Before & After Product Transformation Video",
+            "prompt": "Create a short video showing the transformation of a raw material into a finished product. Use the image of the raw material as the first frame and the image of the finished product as the last frame. The video should be 8 seconds long and convey a sense of innovation and quality craftsmanship. Include subtle background music.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_first_last_to_video",
+                "parameters": {
+                  "first_image_uri": "gs://my-company-assets/raw_material.jpg",
+                  "last_image_uri": "gs://my-company-assets/finished_product.png",
+                  "duration": 8,
+                  "prompt": "A visual transformation from raw material to a high-quality finished product, emphasizing innovation and craftsmanship.",
+                  "generate_audio": true,
+                  "aspect_ratio": "1:1",
+                  "output_filename": "product_transformation_v1"
+                },
+                "quick_explanation": "This call generates a video by interpolating between a start and end image, ideal for showcasing transformations or progress."
+              }
+            ],
+            "novelty_reason": "Effectively uses the 'first and last frame' concept to visually represent a transformation process, which is a creative application for product development or process visualization.",
+            "agent_followup": "The transformation video is complete. Would you like to add a voiceover explaining the process or create a longer version that details specific manufacturing steps?"
+          },
+          {
+            "title": "Social Media Ad Campaign - Video Extension",
+            "prompt": "We have a 7-second video ad clip (gs://my-company-campaigns/short_ad_v1.mp4). Extend this clip to 15 seconds, maintaining the energetic, fast-paced style and focusing on the call to action. Add a dynamic visual effect during the extension and ensure audio continuity.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_extend_video",
+                "parameters": {
+                  "video_uri": "gs://my-company-campaigns/short_ad_v1.mp4",
+                  "prompt": "Extend this fast-paced ad with a dynamic visual effect, reinforcing the call to action and maintaining energy.",
+                  "generate_audio": true,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "short_ad_v1_extended"
+                },
+                "quick_explanation": "This call extends an existing video clip, adding new content guided by a prompt to meet a longer duration requirement while maintaining style and audio."
+              }
+            ],
+            "novelty_reason": "Extends an existing video asset creatively by using a prompt to guide the added content and visual style, enabling repurposing of short clips into longer formats.",
+            "agent_followup": "The extended ad is ready. Would you like to generate variations with different calls to action or perhaps adapt it for different social media aspect ratios (e.g., vertical format)?"
+          }
+        ]
+      },
+      {
+        "category": "Brand Asset Generation & Automation",
+        "scenarios": [
+          {
+            "title": "Automated Brand Mascot Animation",
+            "prompt": "Animate our brand mascot, 'Sparky' (using reference image gs://my-company-brand/sparky_mascot.png). Create a 5-second looping animation where Sparky waves hello and winks. The animation should be in a friendly, cartoonish style and suitable for website banners. Generate it in a square aspect ratio.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-brand/sparky_mascot.png",
+                  "prompt": "A friendly cartoon mascot waving hello and winking, looping animation.",
+                  "duration": 5,
+                  "aspect_ratio": "1:1",
+                  "generate_audio": false,
+                  "model": "veo-3.1-fast-generate-001",
+                  "person_generation": "dont_allow",
+                  "output_filename": "sparky_mascot_wave_loop"
+                },
+                "quick_explanation": "Generates a simple animated loop from a mascot image, setting duration, aspect ratio, and disabling audio for seamless looping."
+              }
+            ],
+            "novelty_reason": "Automates the creation of animated brand assets from a single image, enabling rapid deployment of dynamic elements across digital platforms.",
+            "agent_followup": "The Sparky animation is complete. Would you like to generate another animation where Sparky performs a different action, or perhaps create a longer narrative video featuring Sparky?"
+          },
+          {
+            "title": "Personalized Video Messages for VIP Clients",
+            "prompt": "Generate a personalized welcome video for our VIP client, Ms. Anya Sharma. Use the provided brand logo (gs://my-company-brand/logo.png) and a generic professional background image (gs://my-company-assets/professional_background.jpg). The video should be 10 seconds long, greet Ms. Sharma by name, and briefly mention our commitment to premium service. Include a warm, professional voiceover.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_first_last_to_video",
+                "parameters": {
+                  "first_image_uri": "gs://my-company-assets/professional_background.jpg",
+                  "last_image_uri": "gs://my-company-brand/logo.png",
+                  "duration": 10,
+                  "prompt": "A personalized welcome video for Ms. Anya Sharma, featuring our logo and a professional background, emphasizing premium service.",
+                  "generate_audio": true,
+                  "output_filename": "vip_welcome_anya_sharma"
+                },
+                "quick_explanation": "Creates a personalized video by using a background image and a logo as start and end points, incorporating a personalized prompt for the message."
+              }
+            ],
+            "novelty_reason": "Combines static brand assets with personalized text prompts to generate unique video messages for individual clients, demonstrating personalization at scale.",
+            "agent_followup": "The personalized welcome video for Ms. Sharma is ready. Would you like to generate similar videos for other VIP clients, perhaps with slightly different messaging?"
+          },
+          {
+            "title": "Product Feature Highlight Reel",
+            "prompt": "Create a 20-second video reel showcasing the key features of our new smartphone. Use the product shot (gs://my-company-products/smartphone_main.png) and three feature highlight images (gs://my-company-products/feature_camera.jpg, gs://my-company-products/feature_battery.jpg, gs://my-company-products/feature_screen.jpg). The video should transition smoothly between features, with text overlays briefly describing each. Generate upbeat, tech-focused music.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_reference_to_video",
+                "parameters": {
+                  "reference_image_uris": [
+                    "gs://my-company-products/smartphone_main.png",
+                    "gs://my-company-products/feature_camera.jpg",
+                    "gs://my-company-products/feature_battery.jpg",
+                    "gs://my-company-products/feature_screen.jpg"
+                  ],
+                  "prompt": "A 20-second video reel highlighting a smartphone's key features: camera, battery life, and screen quality. Smooth transitions and upbeat, tech-focused music.",
+                  "duration": 20,
+                  "aspect_ratio": "16:9",
+                  "generate_audio": true,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "smartphone_feature_reel"
+                },
+                "quick_explanation": "Generates a video reel using multiple reference images and a prompt, combining them into a cohesive showcase of product features with audio."
+              }
+            ],
+            "novelty_reason": "Utilizes multiple reference images to construct a narrative video, effectively showcasing different product features in a single, dynamic video asset.",
+            "agent_followup": "The feature reel is complete. Would you like to adjust the duration of each feature segment or perhaps add a voiceover to provide more detail?"
+          }
+        ]
+      },
+      {
+        "category": "Content Ideation & Prototyping",
+        "scenarios": [
+          {
+            "title": "Rapid Prototyping of Marketing Concepts",
+            "prompt": "Generate three distinct 5-second video concepts for a new energy drink launch. Each concept should have a different theme: 'Extreme Sports', 'Healthy Lifestyle', and 'Party Scene'. Use a generic placeholder image (gs://my-company-assets/placeholder_drink.png) for each concept.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-assets/placeholder_drink.png",
+                  "prompt": "A dynamic 5-second video concept for an energy drink, themed around extreme sports (e.g., skateboarding, snowboarding). High energy.",
+                  "duration": 5,
+                  "aspect_ratio": "16:9",
+                  "num_videos": 1,
+                  "output_filename": "energy_drink_concept_extreme"
+                },
+                "quick_explanation": "Generates the first video concept using a placeholder image and a theme-specific prompt."
+              },
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-assets/placeholder_drink.png",
+                  "prompt": "A vibrant 5-second video concept for an energy drink, themed around a healthy lifestyle (e.g., yoga, running). Fresh and natural.",
+                  "duration": 5,
+                  "aspect_ratio": "16:9",
+                  "num_videos": 1,
+                  "output_filename": "energy_drink_concept_healthy"
+                },
+                "quick_explanation": "Generates the second video concept with a different theme."
+              },
+              {
+                "function_name": "veo_i2v",
+                "parameters": {
+                  "image_uri": "gs://my-company-assets/placeholder_drink.png",
+                  "prompt": "An exciting 5-second video concept for an energy drink, themed around a party scene (e.g., dancing, nightlife). Energetic and social.",
+                  "duration": 5,
+                  "aspect_ratio": "16:9",
+                  "num_videos": 1,
+                  "output_filename": "energy_drink_concept_party"
+                },
+                "quick_explanation": "Generates the third video concept with a third distinct theme."
+              }
+            ],
+            "novelty_reason": "Demonstrates rapid ideation by generating multiple distinct video concepts from a single placeholder asset, allowing for quick exploration of different marketing angles.",
+            "agent_followup": "I've generated three distinct concepts. Which theme do you find most promising? Would you like to refine this concept further or explore other themes?"
+          },
+          {
+            "title": "Generating Synthetic Data for Training",
+            "prompt": "Create 10 variations of a video showing a standard shipping box being opened. Each variation should have a slightly different lighting condition and background, and a duration of 3 seconds. This is for training a computer vision model.",
+            "agent_workflow": [
+              {
+                "function_name": "veo_t2v",
+                "parameters": {
+                  "prompt": "A standard brown shipping box being opened, with a neutral background and soft lighting. Duration 3 seconds.",
+                  "num_videos": 5,
+                  "duration": 3,
+                  "aspect_ratio": "16:9",
+                  "generate_audio": false,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "shipping_box_open_data_batch1"
+                },
+                "quick_explanation": "Generates the first batch of synthetic data videos, specifying prompt, number of videos, duration, and aspect ratio, disabling audio for data focus."
+              },
+              {
+                "function_name": "veo_t2v",
+                "parameters": {
+                  "prompt": "A standard brown shipping box being opened, with a slightly darker background and dramatic lighting. Duration 3 seconds.",
+                  "num_videos": 5,
+                  "duration": 3,
+                  "aspect_ratio": "16:9",
+                  "generate_audio": false,
+                  "model": "veo-3.1-fast-generate-001",
+                  "output_filename": "shipping_box_open_data_batch2"
+                },
+                "quick_explanation": "Generates the second batch of synthetic data videos, varying the lighting and background conditions as requested."
+              }
+            ],
+            "novelty_reason": "Leverages text-to-video generation to create a dataset of synthetic video examples with controlled variations, a complex task for training AI models.",
+            "agent_followup": "I've generated 10 variations of the shipping box opening. Would you like to generate more variations with different box types or opening actions, or perhaps change the aspect ratio for mobile viewing?"
+          }
+        ]
+      }
+    ]
+  }
+}
