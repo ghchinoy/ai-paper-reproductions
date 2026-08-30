@@ -25,3 +25,4 @@ Each reproduction directory follows a consistent shape:
 - `technical-report.md` — in-depth technical analysis, architecture, and empirical findings.
 - `blog-post.md` — narrative publication write-up and engineering post-mortem.
 - `recommendations.md` — actionable design guidelines and architectural recommendations.
+- `preprint/` — arXiv-style preprint (Typst source and compiled PDF).

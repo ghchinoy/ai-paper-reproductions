@@ -137,6 +137,7 @@ The framework is modularized under `spike/servers/` and driven by a unified runn
 
 ## Deliverables & Documentation
 
+- [`preprint/`](./preprint/) — arXiv-style academic preprint (Typst source and compiled PDF) typeset via Syntaxis (`@preview/arkheion:0.1.2`).
 - [`technical-report.md`](./technical-report.md) — Comprehensive technical analysis of the Agent Seer reproduction, empirical findings across 3 MCP servers, cross-model circularity validation, and architectural analysis.
 - [`blog-post.md`](./blog-post.md) — Narrative engineering post-mortem: *Why Your LLM Judge Passes Broken Tool Calls: A Spec-Driven Evaluation Post-Mortem*.
 - [`recommendations.md`](./recommendations.md) — Actionable design guidelines for MCP server authors and agent developers on implementing deterministic linting and capability matrices.
