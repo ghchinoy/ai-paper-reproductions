@@ -406,6 +406,30 @@ Across all three evaluated generative-media MCP servers, capability matrix enric
 
 ---
 
+## 6.1. A Fourth Suite and a Narrative Pipeline
+
+After the three single-purpose servers reproduced the finding, we added a fourth suite for `mcp-omni-go` and chained four servers into a narrative production run. The Omni suite behaves consistently with the earlier servers: valid text-to-video and image-conditioned calls hold at 1.000, and capability enrichment widens the discrimination gap from 0.173 to 0.233, a 34.7% expansion.
+
+| MCP Server Suite | Evaluation Mode | Mean Correct TC | Mean Broken TC | Discrimination Gap |
+|---|---|:---:|:---:|:---:|
+| **Google Omni (`mcp-omni-go`)** | Baseline (Raw Spec) | **1.000** | 0.827 | 0.173 |
+| **Google Omni (`mcp-omni-go`)** | **Enriched (Capability Matrix)** | **1.000** | **0.767** | **0.233 (+34.7%)** |
+
+Omni introduces a capability the first three servers could not exercise: it generates video with embedded audio. That makes an obvious pipeline step, generating the video, then requesting a separate Lyria soundtrack and multiplexing them, a redundancy question. A grounded agent must recognize that Omni output carries an audio track before invoking a second audio generator.
+
+The narrative pipeline strings four servers into a commercial-production workflow: a storyboard concept image (Nanobanana), an animated shot with ambient audio (Omni), an original score (Lyria), and a final multiplexing step (AVTool).
+
+| Narrative Case | Injected Fault | Deterministic Linter | Baseline TC | Enriched TC |
+|---|---|:---:|:---:|:---:|
+| **NP0** valid pipeline | none | VALID | 0.996 | 0.883 |
+| **NP1** hallucinated URI in step 2 | dataflow | VALID (miss) | 0.746 | 0.775 |
+| **NP2** illegal aspect ratio + 4K on Flash | capability | **ERROR (caught)** | 0.938 | 0.896 |
+| **NP3** mux called before inputs exist | sequencing | VALID (miss) | 0.542 | 0.583 |
+
+The single capability violation (NP2) is caught by the deterministic linter in under a millisecond, as the single-server suites predicted. The other two broken cases expose the boundary of per-call validation.
+
+---
+
 ## 7. Practical Takeaways for Engineers & MCP Tool Designers
 
 Our empirical reproduction offers clear, actionable architectural lessons for both tool authors and AI agent developers.
@@ -435,7 +459,7 @@ Our empirical reproduction offers clear, actionable architectural lessons for bo
 
 ### For MCP Server Developers:
 1. **Never Hide Capability Rules in Prose:** Docstrings like *"supported aspect ratios are model-dependent"* guarantee silent agent failures and judge blindness. Export a dedicated machine-readable endpoint (e.g., `capabilities/list` or `tools/capabilities`) that exposes exact model-to-feature mappings.
-2. **Unify Cross-Tool Parameter Conventions:** In our multi-server evaluation, we observed needless friction: Lyria expected `model_id` while Veo expected `model`; Lyria expected `output_gcs_bucket` while Nanobanana expected `gcs_bucket_uri`. Standardizing parameter names across your server fleet drastically reduces agent hallucination rates.
+2. **Unify Cross-Tool Parameter Conventions:** In our multi-server evaluation, we observed needless friction: Lyria expected `model_id` while Veo expected `model`; Lyria expected `output_gcs_bucket` while Nanobanana expected `gcs_bucket_uri`. When building the narrative pipeline, we initially wrote the final multiplexing step with `output_uri` and `shortest`, but AVTool expects `output_gcs_bucket` plus `output_filename`. Standardizing parameter names across your server fleet removes an entire class of agent hallucination.
 3. **Include Rich Seed Outputs in Server Repositories:** By including verified sample responses in your server repository (e.g. `seed_outputs.json`), you allow synthetic testing frameworks like Agent Seer to immediately generate **High Grounding** mocks without requiring live credentials.
 
 ### For AI Agent Builders:
@@ -446,9 +470,21 @@ Our empirical reproduction offers clear, actionable architectural lessons for bo
 
 ---
 
+## 7.5. Where This Breaks: The Limits of Stateless Grounding
+
+Capability matrices and the deterministic linter share a structural property: they are stateless. Each tool call is validated in isolation against a schema and a model-to-feature map. That explains why they catch NP2 instantly and miss NP1 and NP3 entirely.
+
+NP1 fails because step 2 consumes a hallucinated image URI instead of the artifact step 1 produced. NP3 fails because the multiplexer runs before the video and audio it depends on exist. Both are inter-call properties: dataflow and execution ordering. No per-call schema check can detect them. The linter reports VALID for both because every individual call is well-formed in isolation.
+
+Enrichment does not resolve these cases. The judge score for NP1 shifts from 0.746 to 0.775, and NP3 shifts from 0.542 to 0.583. That signal originates in the general reasoning of the judge, not the capability matrix, which contains no information regarding execution order. Furthermore, enrichment carries a small cost on the valid multi-step case: NP0 drops from 0.996 to 0.883, as additional context gives the judge more surface to penalize a legitimate four-call sequence.
+
+This is a scope boundary. Capability grounding solves capability bugs. Choreography bugs, including dataflow, ordering, and redundant tool selection, require a stateful, DAG-aware checker that tracks produced artifacts and dependency order across calls.
+
+---
+
 ## 8. What We Built Next: Uplifting to an Agent Plugin & Skill
 
-Following our empirical spike across the three generative-media servers, we uplifted the research prototype into a production Python package (`src/agent_seer/`), an installable CLI (`agent-seer`), a standards-compliant Agent Plugin and Skill (`plugin.json`, `skills/agent-seer/`), and an arXiv-style academic preprint (`preprint/`).
+Following our empirical spike across the generative-media servers, we uplifted the research prototype into a production Python package (`src/agent_seer/`), an installable CLI (`agent-seer`), a standards-compliant Agent Plugin and Skill (`plugin.json`, `skills/agent-seer/`), and an arXiv-style academic preprint (`preprint/`).
 
 The production package turns the lessons of this reproduction into reusable developer tooling:
 
@@ -458,7 +494,7 @@ The production package turns the lessons of this reproduction into reusable deve
 4. **CLI & Agent Packaging:** An `agent-seer` CLI with `inspect`, `lint`, and `eval` commands, alongside agent-friendly plugin and skill manifests for autonomous coding agents.
 5. **Academic Preprint:** A formal arXiv-style preprint (*Agent Seer Meets Schema-Blindness: Spec-Driven Evaluation of Generative-Media MCP Agents*) typeset via Syntaxis with clean booktabs tables and native charts ([`preprint/agent-seer-preprint.pdf`](./preprint/agent-seer-preprint.pdf)).
 
-> **Validation Note:** The production package passes 224 unit, integration, and adversarial tests in CI, but has not yet been run as a live evaluation against the original Veo, Nanobanana, and Lyria empirical discrimination baselines.
+> **Validation Note:** The production package passes 224 unit, integration, and adversarial tests in CI, but has not yet been run as a live evaluation against the original empirical discrimination baselines.
 
 ---
 
@@ -481,7 +517,7 @@ For the formal mathematical proofs, circularity diagnostics, and complete empiri
 - **Agent Plugin & Skill:** `agent-seer-mcp-tool-calling/plugin.json`, `agent-seer-mcp-tool-calling/skills/agent-seer/`
 - **Test Suite:** `agent-seer-mcp-tool-calling/tests/` (224 unit, integration, and adversarial tests)
 - **Reproduction Code & Spike Harness:** `agent-seer-mcp-tool-calling/spike/`
-- **Evaluated MCP Servers:** `mcp-veo-go`, `mcp-nanobanana-go`, `mcp-lyria-go`
+- **Evaluated MCP Servers:** `mcp-veo-go`, `mcp-nanobanana-go`, `mcp-lyria-go`, `mcp-omni-go`, `mcp-avtool-go`
 - **Empirical Artifacts:** `spike/artifacts/discrimination_*.json`, `spike/artifacts/veo_model_capabilities.json`
 - **Technical Report:** [`technical-report.md`](./technical-report.md)
 - **Architectural Recommendations:** [`recommendations.md`](./recommendations.md)
