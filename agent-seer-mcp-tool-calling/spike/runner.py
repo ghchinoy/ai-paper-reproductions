@@ -163,7 +163,7 @@ def print_table(results, judges):
 
 def main():
     parser = argparse.ArgumentParser(description="Agent Seer Discrimination Runner")
-    parser.add_argument("--server", default="veo", choices=["veo", "nanobanana", "lyria", "all"], help="Server to evaluate")
+    parser.add_argument("--server", default="veo", choices=["veo", "nanobanana", "lyria", "omni", "all"], help="Server to evaluate")
     parser.add_argument("--all-servers", action="store_true", help="Run on all available servers")
     parser.add_argument("--enriched", action="store_true", help="Include capability matrix in judge context")
     parser.add_argument("--second-judge", action="store_true", help="Include Gemini 2.5 Pro")
@@ -178,7 +178,7 @@ def main():
     if args.gemma or args.all_judges:
         judges.append("gemma-2-27b-it")
 
-    servers = ["veo", "nanobanana", "lyria"] if (args.all_servers or args.server == "all") else [args.server]
+    servers = ["veo", "nanobanana", "lyria", "omni"] if (args.all_servers or args.server == "all") else [args.server]
 
     for s in servers:
         run_discrimination(s, enriched=args.enriched, judges=judges)

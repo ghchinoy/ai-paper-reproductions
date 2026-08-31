@@ -1,0 +1,33 @@
+{
+  "gemini-omni-1.1-flash-preview": {
+    "CanonicalName": "gemini-omni-1.1-flash-preview",
+    "Aliases": [
+      "Gemini Omni 1.1 Flash",
+      "Omni 1.1",
+      "Omni"
+    ],
+    "SupportedResolutions": [
+      "360p",
+      "720p",
+      "1080p",
+      "4k"
+    ],
+    "SupportsAudioEmbedding": true,
+    "MaxImages": 10,
+    "MaxVideos": 3,
+    "MaxSampleCount": 3
+  },
+  "gemini-omni-flash-preview": {
+    "CanonicalName": "gemini-omni-flash-preview",
+    "Aliases": [
+      "Gemini Omni Flash"
+    ],
+    "SupportedResolutions": [
+      "720p"
+    ],
+    "SupportsAudioEmbedding": true,
+    "MaxImages": 10,
+    "MaxVideos": 3,
+    "MaxSampleCount": 3
+  }
+}

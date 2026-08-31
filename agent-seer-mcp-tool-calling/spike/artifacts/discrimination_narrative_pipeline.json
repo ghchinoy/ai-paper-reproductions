@@ -1,0 +1,169 @@
+{
+  "pipeline": "narrative_media_production",
+  "enriched": false,
+  "results": [
+    {
+      "label": "NP0-correct-narrative-pipeline",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.019,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.996,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.9833333333333334,
+            "ordering": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.9,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_value"
+          ],
+          "rationale": "The agent correctly identified and sequenced all necessary tools to fulfill the user's complex request. All parameters were correctly named, typed, and formatted. The only minor issue was the omission of the \"30-second\" duration from the prompt provided to the lyria_generate_music tool, which was explicitly requested by the user."
+        }
+      }
+    },
+    {
+      "label": "NP1-broken-uri-pipe",
+      "kind": "broken",
+      "injected_fault": "Step 2 omni_video_generation references a nonexistent image URI rather than the output of Step 1",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.03,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.746,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.31666666666666665,
+            "ordering": 0.6666666666666666
+          },
+          "argument_subscores": {
+            "completeness": 0.5,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.1,
+            "type_compliance": 0.1,
+            "format_compliance": 0.1,
+            "relevancy": 0.1
+          },
+          "failures": [
+            "dependency_handling",
+            "argument_value",
+            "argument_completeness"
+          ],
+          "rationale": "The agent failed to pass the output of the first tool call as input to the second, hallucinating a URI. It also missed a specified image size and part of the video generation prompt, and incorrectly formatted the final output path."
+        }
+      }
+    },
+    {
+      "label": "NP2-aspect-ratio-and-size-mismatch",
+      "kind": "broken",
+      "injected_fault": "Step 1 uses illegal aspect_ratio 1:8 and unsupported image_size 4K on gemini-2.5-flash-image",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": false,
+        "errors": [
+          {
+            "call_index": 0,
+            "tool_name": "nanobanana_image_generation",
+            "parameter": "image_size",
+            "category": "capability_violation",
+            "message": "Model 'gemini-2.5-flash-image' does not support image_size '4K'. Supported: []",
+            "severity": "ERROR"
+          },
+          {
+            "call_index": 0,
+            "tool_name": "nanobanana_image_generation",
+            "parameter": "aspect_ratio",
+            "category": "capability_violation",
+            "message": "Aspect ratio '1:8' is not supported on model 'gemini-2.5-flash-image'. Supported: ['1:1', '3:2', '2:3', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9']",
+            "severity": "ERROR"
+          }
+        ],
+        "latency_ms": 0.097,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.938,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 0.9,
+            "arguments": 0.85,
+            "ordering": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.7,
+            "type_compliance": 0.8,
+            "format_compliance": 0.8,
+            "relevancy": 0.8
+          },
+          "failures": [
+            "selection",
+            "argument_value"
+          ],
+          "rationale": "The agent failed to use the correct aspect ratio and image size for the initial image generation as explicitly requested by the user. Additionally, it did not fully address the user's request for specific audio effects ('ambient submarine hum and sonar ping') during video generation."
+        }
+      }
+    },
+    {
+      "label": "NP3-broken-pipeline-ordering",
+      "kind": "broken",
+      "injected_fault": "Pipeline ordering is broken: ffmpeg mux is invoked before video or audio assets have been generated",
+      "expected_taxonomy": "sequence_logic",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.039,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.542,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 0.7333333333333334,
+            "arguments": 0.43333333333333335,
+            "ordering": 0.0
+          },
+          "argument_subscores": {
+            "completeness": 0.8,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.2,
+            "type_compliance": 0.2,
+            "format_compliance": 0.2,
+            "relevancy": 0.2
+          },
+          "failures": [
+            "ordering",
+            "selection",
+            "argument_completeness",
+            "argument_value"
+          ],
+          "rationale": "The agent failed to order the tool calls logically, placing the final combination step first with ungrounded input URIs. It also missed specifying the requested image size and did not address the user's request for specific audio effects for the video animation, indicating issues with argument completeness and tool selection."
+        }
+      }
+    }
+  ]
+}

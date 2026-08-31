@@ -1,0 +1,62 @@
+{
+  "tools": [
+    {
+      "name": "omni_video_generation",
+      "description": "Generates video (with optional embedded audio) from a text prompt, optionally conditioned on input images and/or videos, using Google's Gemini Omni model via the Vertex Interactions API. Returns MP4(s) saved locally and/or to GCS.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt describing the video to generate."
+          },
+          "model": {
+            "type": "string",
+            "description": "The Gemini Omni model ID to use for video generation. Supported models:\n- gemini-omni-1.1-flash-preview (Aliases: Gemini Omni 1.1 Flash, Omni 1.1, Omni) - Gemini Omni 1.1 Flash (Preview): text/image/video in, text+video out, via the Vertex Interactions API (global only). Supports 360p/720p/1080p/4k video output.\n- gemini-omni-flash-preview (Aliases: Gemini Omni Flash) - Gemini Omni Flash (Preview): text/image/video in, text+video out, via the Vertex Interactions API (global only)."
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional. Up to 10 input images to condition generation on. Each entry is a local file path or a gs:// URI (image/png, image/jpeg, image/webp)."
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional. Input videos to reference or edit. Each entry is a local file path or a gs:// URI (e.g. video/mp4, video/webm, video/quicktime)."
+          },
+          "sample_count": {
+            "type": "number",
+            "description": "Optional. Number of videos to generate (1-3, default 1). Clamped to the model maximum of 3."
+          },
+          "temperature": {
+            "type": "number",
+            "description": "Optional. Sampling temperature, 0.0-2.0 (higher = more varied). Sent in generation_config."
+          },
+          "top_p": {
+            "type": "number",
+            "description": "Optional. Nucleus sampling probability mass, 0.0-1.0. Sent in generation_config."
+          },
+          "output_directory": {
+            "type": "string",
+            "description": "Optional. Local directory to save the generated video(s) to."
+          },
+          "gcs_bucket_uri": {
+            "type": "string",
+            "description": "Optional. GCS URI prefix to store generated video(s) (e.g., your-bucket/outputs/). Falls back to GENMEDIA_BUCKET+/omni_outputs/ if set."
+          },
+          "output_filename": {
+            "type": "string",
+            "description": "Optional. Client-predictable base name for the generated file(s). The extension is forced to the true output media type (e.g. .mp4). When a single video is produced the name is used as-is (e.g. 'clip.mp4'); when multiple videos are produced they are suffixed '_1', '_2', ... before the extension (e.g. 'clip_1.mp4'). An existing file/object of the same name is overwritten."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
+}

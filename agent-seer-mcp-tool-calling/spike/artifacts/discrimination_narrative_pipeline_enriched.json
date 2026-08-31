@@ -1,0 +1,173 @@
+{
+  "pipeline": "narrative_media_production",
+  "enriched": true,
+  "results": [
+    {
+      "label": "NP0-correct-narrative-pipeline",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.017,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.883,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.5333333333333333,
+            "ordering": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.3,
+            "type_compliance": 0.3,
+            "format_compliance": 0.3,
+            "relevancy": 0.3
+          },
+          "failures": [
+            "argument_value"
+          ],
+          "rationale": "The agent correctly selected and ordered all necessary tools. However, in the final `ffmpeg_combine_audio_and_video` call, the `output_filename` parameter did not include the 'final/' subdirectory as specified in the user's requested GCS path, resulting in an incorrect output location. This is an argument value error, which cascades penalties to type, format, and relevancy compliance."
+        }
+      }
+    },
+    {
+      "label": "NP1-broken-uri-pipe",
+      "kind": "broken",
+      "injected_fault": "Step 2 omni_video_generation references a nonexistent image URI rather than the output of Step 1",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.039,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.775,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.16666666666666666,
+            "ordering": 0.9333333333333332
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "argument_completeness",
+            "argument_value"
+          ],
+          "rationale": "The agent correctly selected and ordered the tools. However, it failed to provide a required parameter (`image_size`) in the first call, hallucinated an input URI in the second call, and missed a path component in the output filename for the final call."
+        }
+      }
+    },
+    {
+      "label": "NP2-aspect-ratio-and-size-mismatch",
+      "kind": "broken",
+      "injected_fault": "Step 1 uses illegal aspect_ratio 1:8 and unsupported image_size 4K on gemini-2.5-flash-image",
+      "expected_taxonomy": "argument_value",
+      "deterministic_linter": {
+        "is_valid": false,
+        "errors": [
+          {
+            "call_index": 0,
+            "tool_name": "nanobanana_image_generation",
+            "parameter": "image_size",
+            "category": "capability_violation",
+            "message": "Model 'gemini-2.5-flash-image' does not support image_size '4K'. Supported: []",
+            "severity": "ERROR"
+          },
+          {
+            "call_index": 0,
+            "tool_name": "nanobanana_image_generation",
+            "parameter": "aspect_ratio",
+            "category": "capability_violation",
+            "message": "Aspect ratio '1:8' is not supported on model 'gemini-2.5-flash-image'. Supported: ['1:1', '3:2', '2:3', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9']",
+            "severity": "ERROR"
+          }
+        ],
+        "latency_ms": 0.056,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.896,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 0.8333333333333334,
+            "arguments": 0.8166666666666668,
+            "ordering": 0.9333333333333332
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.5,
+            "type_compliance": 0.8,
+            "format_compliance": 0.8,
+            "relevancy": 0.8
+          },
+          "failures": [
+            "selection",
+            "ordering",
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent failed to fully address the user's request for specific audio in the video generation step. It also made significant errors in argument values for image generation (incorrect aspect ratio, unsupported image size) and for combining media (ungrounded audio filename, incorrect output path). These value errors cascaded to lower scores in type, format, and relevancy compliance."
+        }
+      }
+    },
+    {
+      "label": "NP3-broken-pipeline-ordering",
+      "kind": "broken",
+      "injected_fault": "Pipeline ordering is broken: ffmpeg mux is invoked before video or audio assets have been generated",
+      "expected_taxonomy": "sequence_logic",
+      "deterministic_linter": {
+        "is_valid": true,
+        "errors": [],
+        "latency_ms": 0.179,
+        "checked_calls": 4
+      },
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.583,
+          "dimensions": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333,
+            "ordering": 0.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "ordering",
+            "argument_value",
+            "argument_value",
+            "argument_value",
+            "argument_value"
+          ],
+          "rationale": "The agent's tool calls are severely flawed in their ordering and argument handling. The `ffmpeg_combine_audio_and_video` call is placed first but depends on outputs from later calls, and it uses ungrounded, assumed filenames for its inputs. Additionally, the agent fails to fully address user requests for the 2K image size and specific audio for the video animation."
+        }
+      }
+    }
+  ]
+}

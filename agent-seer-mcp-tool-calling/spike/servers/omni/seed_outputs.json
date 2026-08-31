@@ -1,0 +1,16 @@
+{
+  "omni_video_generation": {
+    "status": "completed",
+    "operation_id": "projects/108284920/locations/global/interactions/omni_session_8819b",
+    "response": {
+      "videos": [
+        {
+          "gcs_uri": "gs://my-bucket/omni_outputs/omni_clip.mp4",
+          "mime_type": "video/mp4",
+          "duration_seconds": 6
+        }
+      ]
+    },
+    "text": "Generated 1 video(s) using gemini-omni-1.1-flash-preview. Output saved to gs://my-bucket/omni_outputs/omni_clip.mp4."
+  }
+}

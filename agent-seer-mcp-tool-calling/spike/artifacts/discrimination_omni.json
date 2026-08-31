@@ -1,0 +1,351 @@
+{
+  "server": "omni",
+  "enriched": false,
+  "judges": [
+    "gemini-2.5-flash"
+  ],
+  "summary": {
+    "gemini-2.5-flash": {
+      "mean_correct": 1.0,
+      "mean_broken": 0.827,
+      "gap": 0.173,
+      "taxonomy_hits": "5/5"
+    }
+  },
+  "results": [
+    {
+      "label": "OM0-correct-text-to-video",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Generate a 5-second video of a golden retriever puppy playing with a red ball in a sunny park with playful background audio. Save to gs://genmedia-bucket/omni/puppy.mp4.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Golden retriever puppy playing with a red ball in a sunny green park, natural playful barking and outdoor ambience",
+            "model": "gemini-omni-1.1-flash-preview",
+            "sample_count": 1,
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/",
+            "output_filename": "puppy.mp4"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for video generation, selected the appropriate tool, and provided all necessary and relevant parameters with correct values and types, accurately interpreting the user's request."
+        }
+      }
+    },
+    {
+      "label": "OM1-correct-image-conditioned",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Using the keyframe image at gs://genmedia-bucket/storyboard/scene1.png, generate a cinematic video of the camera zooming in slowly on the ancient stone tower with ambient wind sounds.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Slow smooth cinematic camera push-in on the weathered ancient stone tower, ambient mountain wind whistling",
+            "model": "gemini-omni-1.1-flash-preview",
+            "images": [
+              "gs://genmedia-bucket/storyboard/scene1.png"
+            ],
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/",
+            "output_filename": "scene1_zoom.mp4"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for video generation and used the appropriate tool. All parameters were correctly named, typed, and formatted, with values accurately reflecting the user's request and reasonable defaults for unspecified options."
+        }
+      }
+    },
+    {
+      "label": "OM2-hallucinated-model",
+      "kind": "broken",
+      "injected_fault": "Model ID 'gemini-omni-2.0-pro-preview' is not supported in the Omni specification",
+      "expected_taxonomy": "argument_value",
+      "prompt": "Generate a 5-second video of a golden retriever puppy playing with a red ball in a sunny park with playful background audio. Save to gs://genmedia-bucket/omni/puppy.mp4.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Golden retriever puppy playing with a red ball in a sunny park",
+            "model": "gemini-omni-2.0-pro-preview",
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/",
+            "output_filename": "puppy.mp4"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.744,
+          "dims": {
+            "usage": 1.0,
+            "selection": 0.9,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 0.0
+          },
+          "failures": [
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy",
+            "selection_completeness"
+          ],
+          "rationale": "The agent correctly selected the tool and extracted most parameters. However, it provided an unsupported model ID, which is a critical error. Additionally, the agent did not address the requested video duration or background audio, as the tool lacks parameters for these features."
+        }
+      }
+    },
+    {
+      "label": "OM3-missing-prompt",
+      "kind": "broken",
+      "injected_fault": "Required parameter 'prompt' is omitted from the tool call",
+      "expected_taxonomy": "argument_completeness",
+      "prompt": "Generate a 5-second video of a golden retriever puppy playing with a red ball in a sunny park with playful background audio. Save to gs://genmedia-bucket/omni/puppy.mp4.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "model": "gemini-omni-1.1-flash-preview",
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/",
+            "output_filename": "puppy.mp4"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.778,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.3333333333333333
+          },
+          "argument_subscores": {
+            "completeness": 0.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.0,
+            "type_compliance": 0.0,
+            "format_compliance": 0.0,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_completeness"
+          ],
+          "rationale": "The agent failed to include the required 'prompt' parameter, which is essential for video generation and was clearly provided in the user's request. This critical omission renders the tool call incomplete and unusable."
+        }
+      }
+    },
+    {
+      "label": "OM4-malformed-images-type",
+      "kind": "broken",
+      "injected_fault": "Parameter 'images' passed as a string rather than array of strings",
+      "expected_taxonomy": "argument_type",
+      "prompt": "Using the keyframe image at gs://genmedia-bucket/storyboard/scene1.png, generate a cinematic video of the camera zooming in slowly on the ancient stone tower with ambient wind sounds.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Slow camera push-in on ancient stone tower",
+            "images": "gs://genmedia-bucket/storyboard/scene1.png",
+            "model": "gemini-omni-1.1-flash-preview",
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.956,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.8666666666666667
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.6,
+            "type_compliance": 0.8,
+            "format_compliance": 0.8,
+            "relevancy": 1.0
+          },
+          "failures": [
+            "argument_value",
+            "argument_type",
+            "argument_format"
+          ],
+          "rationale": "The agent's prompt omitted key details from the user's request, specifically 'cinematic' and 'with ambient wind sounds'. Additionally, the 'images' parameter was provided as a single string instead of an array of strings, which is a type mismatch."
+        }
+      }
+    },
+    {
+      "label": "OM5-illegal-sample-count",
+      "kind": "broken",
+      "injected_fault": "Parameter 'sample_count' is set to 5 (model maximum is 3)",
+      "expected_taxonomy": "argument_format",
+      "prompt": "Generate a 5-second video of a golden retriever puppy playing with a red ball in a sunny park with playful background audio. Save to gs://genmedia-bucket/omni/puppy.mp4.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Golden retriever puppy playing in sunny park",
+            "sample_count": 5,
+            "model": "gemini-omni-1.1-flash-preview",
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.789,
+          "dims": {
+            "usage": 1.0,
+            "selection": 0.9333333333333332,
+            "arguments": 0.43333333333333335
+          },
+          "argument_subscores": {
+            "completeness": 0.7,
+            "name_accuracy": 1.0,
+            "value_accuracy": 0.2,
+            "type_compliance": 0.2,
+            "format_compliance": 0.2,
+            "relevancy": 0.3
+          },
+          "failures": [
+            "argument_completeness",
+            "argument_value",
+            "argument_type",
+            "argument_format",
+            "argument_relevancy"
+          ],
+          "rationale": "The agent correctly selected the tool but failed to fully capture the user's prompt details and misinterpreted '5-second video' as '5 videos' for the `sample_count` parameter, which is also out of the allowed range. The `output_filename` was also omitted despite being specified by the user."
+        }
+      }
+    },
+    {
+      "label": "OM6-wrong-bucket-param-name",
+      "kind": "broken",
+      "injected_fault": "Passed 'bucket' instead of schema-defined 'gcs_bucket_uri'",
+      "expected_taxonomy": "argument_name",
+      "prompt": "Generate a 5-second video of a golden retriever puppy playing with a red ball in a sunny park with playful background audio. Save to gs://genmedia-bucket/omni/puppy.mp4.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Golden retriever puppy playing in sunny park",
+            "bucket": "gs://genmedia-bucket/omni/",
+            "model": "gemini-omni-1.1-flash-preview"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 0.867,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 0.6
+          },
+          "argument_subscores": {
+            "completeness": 0.4,
+            "name_accuracy": 0.6,
+            "value_accuracy": 0.6,
+            "type_compliance": 0.7,
+            "format_compliance": 0.7,
+            "relevancy": 0.6
+          },
+          "failures": [
+            "argument_name",
+            "argument_completeness",
+            "argument_relevancy",
+            "argument_value"
+          ],
+          "rationale": "The agent selected the correct tool but failed to use the correct parameter name for the GCS bucket URI (`bucket` instead of `gcs_bucket_uri`) and omitted the `output_filename` parameter entirely. The prompt value was also slightly incomplete, missing a detail from the user's request."
+        }
+      }
+    },
+    {
+      "label": "OM7-correct-multi-image-edit",
+      "kind": "correct",
+      "injected_fault": "none",
+      "expected_taxonomy": "none",
+      "prompt": "Take the two images gs://genmedia-bucket/shot1.png and gs://genmedia-bucket/shot2.png and create a dynamic transition video connecting them.",
+      "calls": [
+        {
+          "function_name": "omni_video_generation",
+          "parameters": {
+            "prompt": "Dynamic seamless cross-dissolve camera transition connecting the two scene angles",
+            "images": [
+              "gs://genmedia-bucket/shot1.png",
+              "gs://genmedia-bucket/shot2.png"
+            ],
+            "model": "gemini-omni-1.1-flash-preview",
+            "temperature": 0.7,
+            "gcs_bucket_uri": "gs://genmedia-bucket/omni/",
+            "output_filename": "transition_scene.mp4"
+          }
+        }
+      ],
+      "scores": {
+        "gemini-2.5-flash": {
+          "tc": 1.0,
+          "dims": {
+            "usage": 1.0,
+            "selection": 1.0,
+            "arguments": 1.0
+          },
+          "argument_subscores": {
+            "completeness": 1.0,
+            "name_accuracy": 1.0,
+            "value_accuracy": 1.0,
+            "type_compliance": 1.0,
+            "format_compliance": 1.0,
+            "relevancy": 1.0
+          },
+          "failures": [],
+          "rationale": "The agent correctly identified the need for video generation, selected the appropriate tool, and provided all necessary and relevant parameters with correct values and types, directly addressing the user's request."
+        }
+      }
+    }
+  ]
+}
