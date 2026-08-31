@@ -5,7 +5,7 @@
   authors: (
     (name: "G. Hussain Chinoy", email: "ghchinoy@gmail.com", affiliation: "Independent Researcher"),
   ),
-  abstract: [Autonomous AI agents that call external tools need realistic test scenarios. Building them by hand does not scale, and live execution is slow and costly in generative-media domains. Agent Seer (arXiv:2608.26133) generates these scenarios from tool specifications alone. We reproduce its pipeline across three production media servers: Google Veo, Nanobanana, and Lyria. We find a critical gap we call Schema-Blindness. Standard JSON schemas hide runtime model constraints, so an LLM judge scores broken calls as perfect ($"TC" = 1.000$). Injecting a machine-readable capability matrix fixes this. It restores discrimination gaps of $>= 0.191$ and widens the image-generation margin by 36.1%. We also propose a three-layer taxonomy that separates cheap orchestration checks from costly media-quality evaluation.],
+  abstract: [Autonomous AI agents that call external tools need realistic test scenarios. Building them by hand does not scale, and live execution is slow and costly in generative-media domains. Agent Seer (arXiv:2608.26133) generates these scenarios from tool specifications alone. We reproduce its pipeline across four production media servers: Google Veo, Nanobanana, Lyria, and Gemini Omni (`mcp-omni-go`), alongside cross-server production pipelines. We find a critical gap we call Schema-Blindness. Standard JSON schemas hide runtime model constraints, so an LLM judge scores broken calls as perfect ($"TC" = 1.000$). Injecting a machine-readable capability matrix fixes this. It restores discrimination gaps of $>= 0.191$, expands image discrimination by $+36.1\%$, and expands Omni video discrimination by $+34.7\%$. We also formalize the boundary between stateless capability pre-passes and stateful choreography verification.],
 )
 
 = Introduction
@@ -22,7 +22,7 @@ In generative-media domains (e.g., video diffusion, neural image synthesis, audi
 
 Recently, *Agent Seer* (Karumuri et al., arXiv:2608.26133) established that *tool specifications—consisting of function names, natural-language documentation, and typed JSON schemas—encode sufficient latent semantic structure to autonomously synthesize end-to-end evaluation suites without manual curation or live tool execution.*
 
-In this work, we deconstruct, empirically reproduce, and substantially extend the Agent Seer methodology across three production-grade generative-media MCP server suites: Google Veo (`mcp-veo-go`), Gemini Image / Nanobanana (`mcp-nanobanana-go`), and Google Lyria (`mcp-lyria-go`).
+In this work, we deconstruct, empirically reproduce, and substantially extend the Agent Seer methodology across four production-grade generative-media MCP server suites: Google Veo (`mcp-veo-go`), Gemini Image / Nanobanana (`mcp-nanobanana-go`), Google Lyria (`mcp-lyria-go`), and Gemini Omni (`mcp-omni-go`), alongside multi-server production pipelines.
 
 == The Primary Contributions
 
@@ -30,7 +30,7 @@ The primary contributions of this work are:
 
 1. *Faithful Empirical Reproduction:* We provide the first comprehensive, multi-server reproduction of the complete Agent Seer pipeline applied to generative-media MCP interfaces, achieving 100% tool coverage across single-turn and multi-turn workflows while verifying mathematical scoring assertions and decomposed rubric mechanics.
 2. *Identification of the Schema-Blindness Vulnerability:* We uncover a critical, negative finding: raw JSON tool schemas (`tools/list`) omit runtime backend model compatibility constraints (e.g., model-specific aspect ratios, duration limits, and audio flags), causing un-enriched LLM judges to grant false passes ($"TC" = 1.000$) to production-breaking bugs.
-3. *The Capability-Matrix Enrichment Fix:* We architect and validate a machine-readable capability matrix enrichment layer that bridges static JSON schemas and backend runtime registries, restoring robust discrimination gaps ($>= 0.191$) across all evaluated servers and expanding the image generation discrimination margin by $+36.1\%$.
+3. *The Capability-Matrix Enrichment Fix:* We architect and validate a machine-readable capability matrix enrichment layer that bridges static JSON schemas and backend runtime registries, restoring robust discrimination gaps ($>= 0.191$) across all evaluated servers and expanding the discrimination margin by $+36.1\%$ on Nanobanana and $+34.7\%$ on Omni.
 4. *A Three-Layer Generative Media Evaluation Taxonomy:* We formalize a decoupled architectural framework separating Infrastructure Liveness (Layer 0), Orchestration Correctness (Layer 1), and Perceptual Media Quality (Layer 2), enabling sub-second, zero-cost CI pull request gating.
 
 = Background, Related Work & Positioning
@@ -200,9 +200,9 @@ Upon injecting the capability matrix, the judge immediately enforced hidden cons
 - *Nanobanana Case NB1:* $"TC"$ collapsed from *$0.944 -> 0.778$* ($Delta = -0.166$). Argument score collapsed to $0.333$.
 - *Valid Calls Preserved:* Correct baseline cases remained pristine (`A0-correct`: $0.994$, `NB0-correct`: $0.989$, `NB6-correct`: $1.000$, `LY0-correct`: $1.000$).
 
-= Experimental Evaluation across Three Generative-Media MCP Server Suites
+= Experimental Evaluation across Four Generative-Media MCP Server Suites
 
-All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, Temperature 0.0) and cross-validated with Gemini 2.5 Pro and Gemma 2 27B IT, evaluated across 26 distinct test cases in the reproduction repository (`spike/artifacts/`).
+All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, Temperature 0.0) and cross-validated with Gemini 2.5 Pro and Gemma 2 27B IT, evaluated across 42 distinct test cases in the reproduction repository (`spike/artifacts/`).
 
 == Comprehensive Multi-Server Summary
 
@@ -219,6 +219,8 @@ All empirical evaluations were executed using Gemini 2.5 Flash (Primary Judge, T
   [Nanobanana (Image)], [Enriched], [0.994], [0.780], [0.215 (+36.1% gap)], [5/6 (83.3%)],
   [Lyria (Music)], [Baseline], [1.000], [0.752], [0.248], [5/5 (100.0%)],
   [Lyria (Music)], [Enriched], [1.000], [0.809], [0.191], [5/5 (100.0%)],
+  [Omni (Video/Audio)], [Baseline], [1.000], [0.827], [0.173], [5/5 (100.0%)],
+  [Omni (Video/Audio)], [Enriched], [1.000], [0.767], [0.233 (+34.7% gap)], [5/5 (100.0%)],
   table.hline(stroke: 0.9pt),
 )
 
@@ -292,9 +294,33 @@ The Lyria suite evaluates 7 test cases covering audio generation durations, para
   table.hline(stroke: 0.9pt),
 )
 
+== Server Suite 4: Gemini Omni (`mcp-omni-go`)
+
+The Omni suite evaluates 8 test cases covering multimodal inputs, output directory handling, sample counts, and video generation with native embedded audio.
+
+#table(
+  columns: (2fr, 0.7fr, 2.5fr, 1.3fr, 1fr, 1fr),
+  table.hline(stroke: 0.9pt),
+  table.header(
+    [*Case ID*], [*Kind*], [*Injected Defect / Task Description*], [*Target Taxonomy*], [*Baseline TC*], [*Enriched TC*]
+  ),
+  table.hline(stroke: 0.5pt),
+  [`OM0-correct-text-to-video`], [Correct], [Text-to-video (Gemini Omni 1.1 Flash)], [None], [*1.000*], [*1.000*],
+  [`OM1-correct-image-cond`], [Correct], [Image-conditioned video generation], [None], [*1.000*], [*1.000*],
+  [`OM2-hallucinated-model`], [Broken], [Hallucinated `gemini-omni-2.0-pro-preview`], [`argument_val`], [*0.744*], [*0.850*],
+  [`OM3-missing-req-prompt`], [Broken], [Omitted required `prompt` parameter], [`arg_comp`], [*0.778*], [*0.667*],
+  [`OM4-malformed-images-type`], [Broken], [`images` passed as string instead of array], [`argument_type`], [*0.956* #badge-highlight[Near]], [*0.828*],
+  [`OM5-illegal-sample-count`], [Broken], [`sample_count: 5` (violates upper limit 3)], [`argument_fmt`], [*0.789*], [*0.761*],
+  [`OM6-wrong-bucket-param`], [Broken], [Passed `bucket` instead of `gcs_bucket_uri`], [`argument_name`], [*0.867*], [*0.728*],
+  [`OM7-correct-multi-image`], [Correct], [Multi-image input array conditioning], [None], [*1.000*], [*1.000*],
+  table.hline(stroke: 0.9pt),
+)
+
+*Key Metric:* Capability matrix enrichment expanded Omni's discrimination gap from *0.173 to 0.233*, representing a *$+34.7\%$ expansion in discriminating power*.
+
 == Cross-Server Production Pipeline Evaluation
 
-We also validated multi-turn capabilities over a four-step cross-server media pipeline (`cross_server_media_production`) where inputs are chained from Lyria to Nanobanana to Veo.
+We also validated multi-turn capabilities over two distinct multi-server pipelines: a sequential audio-image-video chain (`cross_server_media_production`) and an end-to-end commercial narrative pipeline (`narrative_media_production`) chaining storyboard creation (Nanobanana), video synthesis (Omni), musical scoring (Lyria), and final multiplexing (AVTool).
 
 #table(
   columns: (2.2fr, 1.8fr, 0.9fr, 0.9fr, 0.9fr, 0.9fr),
@@ -310,7 +336,21 @@ We also validated multi-turn capabilities over a four-step cross-server media pi
   table.hline(stroke: 0.9pt),
 )
 
-The cross-server run confirms that while selection remains resilient, out-of-order execution (*CS3*) completely derails the model's pipeline state representation, collapsing the Ordering dimension to *0.000* and overall $"TC"$ to *0.517*.
+#table(
+  columns: (2fr, 0.7fr, 2.5fr, 1.3fr, 1fr, 1fr),
+  table.hline(stroke: 0.9pt),
+  table.header(
+    [*Narrative Case ID*], [*Kind*], [*Injected Defect / Task Description*], [*Deterministic Linter*], [*Baseline TC*], [*Enriched TC*]
+  ),
+  table.hline(stroke: 0.5pt),
+  [`NP0-correct-narrative`], [Correct], [Full 4-step storyboard-to-mux workflow], [VALID], [*0.996*], [*0.883*],
+  [`NP1-broken-uri-pipe`], [Broken], [Step 2 consumes hallucinated image URI], [VALID (Miss)], [*0.746*], [*0.775*],
+  [`NP2-capability-mismatch`], [Broken], [Step 1 uses aspect 1:8 & 4K on Flash 2.5], [ERROR (Caught)], [*0.938*], [*0.896*],
+  [`NP3-broken-ordering`], [Broken], [Mux invoked before video/audio inputs exist], [VALID (Miss)], [*0.542*], [*0.583*],
+  table.hline(stroke: 0.9pt),
+)
+
+The narrative evaluation demonstrates the structural boundary between stateless capability pre-passes and stateful choreography verification: while the capability violation (*NP2*) is caught in sub-milliseconds by the deterministic linter, dataflow (*NP1*) and execution ordering (*NP3*) defects require stateful dependency analysis.
 
 = Discussion: Architectural Boundaries & Evaluation Robustness
 
@@ -335,7 +375,7 @@ Evaluating LLM outputs using another LLM introduces risks of self-evaluation bia
 
 = Conclusion
 
-This work presented an empirical reproduction and extension of the specification-driven evaluation methodology of *Agent Seer* across three production-grade generative-media MCP suites. While the methodology successfully eliminates the cold-start benchmark curation bottleneck and achieves 100% tool coverage, our empirical findings reveal that raw JSON schemas are vulnerable to *Schema-Blindness*. Injecting machine-readable capability matrices restores clean discrimination gaps ($>= 0.191$) and expands discrimination margins by $+36.1\%$, establishing a robust, decoupled foundation for continuous integration evaluation of autonomous AI agents.
+This work presented an empirical reproduction and extension of the specification-driven evaluation methodology of *Agent Seer* across four production-grade generative-media MCP suites and multi-server pipelines. While the methodology successfully eliminates the cold-start benchmark curation bottleneck and achieves 100% tool coverage, our empirical findings reveal that raw JSON schemas are vulnerable to *Schema-Blindness*. Injecting machine-readable capability matrices restores clean discrimination gaps ($>= 0.191$) and expands discrimination margins by $+36.1\%$ on image synthesis and $+34.7\%$ on Omni video synthesis, establishing a robust, decoupled foundation for continuous integration evaluation of autonomous AI agents.
 
 #show: arkheion-appendices
 
@@ -355,49 +395,15 @@ python3 agent-seer-mcp-tool-calling/spike/runner.py --server nanobanana --enrich
 python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria
 python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria --enriched
 
-# 4. Verify Mathematical Scoring Assertions
-python3 -c '
-import sys
-sys.path.insert(0, "agent-seer-mcp-tool-calling/spike")
-import scoring
+# 4. Run Gemini Omni Baseline & Enriched Discrimination Tests
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server omni
+python3 agent-seer-mcp-tool-calling/spike/runner.py --server omni --enriched
 
-# Verify Perfect Call Score
-perfect = {
-    "usage": {"necessity": 10, "overuse_detection": 10},
-    "selection": {"correctness": 10, "specificity": 10, "completeness": 10},
-    "ordering": {"not_applicable": True},
-    "arguments": {"completeness": 10, "name_accuracy": 10, "value_accuracy": 10, "type_compliance": 10, "format_compliance": 10, "relevancy": 10},
-    "failures": [], "rationale": "perfect"
-}
-assert scoring.aggregate_tc(perfect)["tc_overall"] == 1.0
+# 5. Run Narrative Media Production Pipeline Evaluation
+python3 agent-seer-mcp-tool-calling/spike/narrative_pipeline.py --unenriched
+python3 agent-seer-mcp-tool-calling/spike/narrative_pipeline.py
 
-# Verify Cascading Parameter Name Collapse (1.0 -> 0.667)
-cascaded_name = {
-    "usage": {"necessity": 10, "overuse_detection": 10},
-    "selection": {"correctness": 10, "specificity": 10, "completeness": 10},
-    "ordering": {"not_applicable": True},
-    "arguments": {"completeness": 0, "name_accuracy": 0, "value_accuracy": 0, "type_compliance": 0, "format_compliance": 0, "relevancy": 0},
-    "failures": ["argument_name"], "rationale": "bad name"
-}
-assert round(scoring.aggregate_tc(cascaded_name)["tc_overall"], 3) == 0.667
-print("All mathematical scoring assertions verified successfully.")
-'
-```
-
-
-```bash
-# 1. Run Baseline Veo Discrimination Test (Flash & Pro Judges)
-python3 agent-seer-mcp-tool-calling/spike/discrimination_test.py --second-judge
-
-# 2. Run Nanobanana Baseline & Enriched Discrimination Tests
-python3 agent-seer-mcp-tool-calling/spike/runner.py --server nanobanana
-python3 agent-seer-mcp-tool-calling/spike/runner.py --server nanobanana --enriched
-
-# 3. Run Lyria Baseline & Enriched Discrimination Tests
-python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria
-python3 agent-seer-mcp-tool-calling/spike/runner.py --server lyria --enriched
-
-# 4. Verify Mathematical Scoring Assertions
+# 6. Verify Mathematical Scoring Assertions
 python3 -c '
 import sys
 sys.path.insert(0, "agent-seer-mcp-tool-calling/spike")
